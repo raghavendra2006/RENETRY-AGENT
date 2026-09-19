@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block title %}Pathway 3: Career Shift & Transition — ReTurn Platform{% endblock %}
+
+{% block content %}
+<div class="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Breadcrumb & Header -->
+    <div class="mb-6">
+        <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+            <a href="{{ url_for('user_dashboard') }}" class="hover:underline">Dashboard</a>
+            <span>&bull;</span>
+            <span class="text-teal-800 font-semibold">Pathway 3: Career Shift</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Career Shift & Industry Transition</h1>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1 max-w-3xl">
+            Start with the career change you have in mind and why it matters to you. We will check feasibility, suggest practical actions, and identify realistic ways to fund the transition before you work on your resume.
+        </p>
+    </div>
+
+    <!-- Career shift intake and feasibility plan -->
+    <div id="transition-intake" class="bg-slate-900 text-white p-6 sm:p-8 rounded-lg shadow-sm mb-8">
+        <div class="max-w-4xl">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-300 mb-2">Start with your transition idea</div>
+            <h2 class="text-xl sm:text-2xl font-bold">Let’s test the change before rewriting your resume</h2>
+            <p class="text-sm text-slate-300 mt-2">A clear idea and honest motivation help us recommend a safer, more actionable path.</p>
+
+            <form id="transition-intake-form" class="mt-6 space-y-4">
+                <div>
+                    <label for="transition-idea" class="block text-xs font-semibold text-slate-200 mb-1">What career or business idea do you want to move into?</label>
+                    <textarea id="transition-idea" rows="3" required placeholder="Example: Move from teaching into instructional design, or start a home-based bookkeeping service." class="w-full px-3 py-2 text-xs text-slate-900 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-emerald-400"></textarea>
+                </div>
+                <div>
+                    <label for="transition-motivation" class="block text-xs font-semibold text-slate-200 mb-1">What is motivating this change?</label>
+                    <textarea id="transition-motivation" rows="3" required placeholder="Example: I want flexible work, better income, and to use my communication skills in a growing field." class="w-full px-3 py-2 text-xs text-slate-900 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-emerald-400"></textarea>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="transition-time" class="block text-xs font-semibold text-slate-200 mb-1">Time available each week</label>
+                        <select id="transition-time" class="w-full px-3 py-2 text-xs text-slate-900 border border-slate-300 rounded">
+                            <option value="3-5">3–5 hours</option>
+                            <option value="6-10" selected>6–10 hours</option>
+                            <option value="11-15">11–15 hours</option>
+                            <option value="15+">More than 15 hours</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="transition-budget" class="block text-xs font-semibold text-slate-200 mb-1">Learning or launch budget</label>
+                        <select id="transition-budget" class="w-full px-3 py-2 text-xs text-slate-900 border border-slate-300 rounded">
+                            <option value="none">No budget right now</option>
+                            <option value="low" selected>Small budget</option>
+                            <option value="moderate">Moderate budget</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="px-5 py-2.5 rounded bg-emerald-400 text-slate-950 text-xs font-bold hover:bg-emerald-300">Assess feasibility & create my action plan &rarr;</button>
+            </form>
+
+            <div id="transition-plan" class="hidden mt-6 pt-5 border-t border-slate-700">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 text-xs">
+                    <div class="p-4 rounded bg-slate-800 border border-slate-700">
+                        <h3 class="font-bold text-emerald-300">Feasibility study</h3>
+                        <p id="feasibility-summary" class="text-slate-300 mt-2"></p>
+                        <ul class="list-disc pl-4 mt-2 space-y-1 text-slate-300">
+                            <li>Interview or survey three people already doing this work.</li>
+                            <li>Review ten real job or customer listings and note repeated skills, pay, and entry requirements.</li>
+                            <li>Complete one small sample task and ask for feedback before paying for a long course.</li>
+                        </ul>
+                    </div>
+                    <div class="p-4 rounded bg-slate-800 border border-slate-700">
+                        <h3 class="font-bold text-emerald-300">Actionable 90-day plan</h3>
+                        <ol class="list-decimal pl-4 mt-2 space-y-1 text-slate-300">
+                            <li><strong>Days 1–14:</strong> Validate demand and list the three skills you must bridge.</li>
+                            <li><strong>Days 15–45:</strong> Learn one priority skill and complete a small proof-of-work project.</li>
+                            <li><strong>Days 46–75:</strong> Get feedback, improve the project, and practise the target workflow.</li>
+                            <li><strong>Days 76–90:</strong> Apply to targeted roles or test the idea with your first pilot client.</li>
+                        </ol>
+                    </div>
+                    <div class="p-4 rounded bg-slate-800 border border-slate-700 lg:col-span-2">
+                        <h3 class="font-bold text-emerald-300">Funding and low-risk launch ideas</h3>
+                        <p id="funding-summary" class="text-slate-300 mt-2"></p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-3 text-slate-300">
+                            <div><strong class="text-white">Learn cheaply:</strong> use free public courses, library resources, and employer-sponsored learning before borrowing.</div>
+                            <div><strong class="text-white">Earn while learning:</strong> try a small freelance, volunteer, internship, or project-based assignment to test demand.</div>
+                            <div><strong class="text-white">Check support:</strong> compare scholarships, women-focused schemes, skilling vouchers, and regulated small-business programs.</div>
+                        </div>
+                        <a href="{{ url_for('government_hub') }}" class="text-emerald-300 font-semibold inline-block mt-3 hover:underline">Explore government opportunities and support &rarr;</a>
+                    </div>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-4">This is a planning aid, not a guarantee of income, funding approval, or employment. Confirm eligibility, fees, repayment terms, and official deadlines before committing money.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clear Visual Flowchart of Transition -->
+    <div id="transition-tools" class="hidden">
+    <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm mb-8">
+        <div class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4 text-center">
+            Linear Career Pivot Architecture
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-center text-xs">
+            <div class="p-3 bg-slate-100 rounded border border-slate-300">
+                <div class="text-[10px] text-slate-500 font-bold uppercase">Step 1</div>
+                <div class="font-bold text-slate-900 mt-1">Current Career</div>
+                <div class="text-[10px] text-slate-600 mt-0.5">{{ profile.previous_job_title if profile and profile.previous_job_title else 'Prior Domain' }}</div>
+            </div>
+            <div class="p-3 bg-teal-50 rounded border border-teal-200">
+                <div class="text-[10px] text-teal-700 font-bold uppercase">Step 2</div>
+                <div class="font-bold text-teal-900 mt-1">Transferable Skills</div>
+                <div class="text-[10px] text-teal-800 mt-0.5">Foundational overlap</div>
+            </div>
+            <div class="p-3 bg-amber-50 rounded border border-amber-200">
+                <div class="text-[10px] text-amber-700 font-bold uppercase">Step 3</div>
+                <div class="font-bold text-amber-900 mt-1">Skill-Gap Audit</div>
+                <div class="text-[10px] text-amber-800 mt-0.5">Missing tools</div>
+            </div>
+            <div class="p-3 bg-blue-50 rounded border border-blue-200">
+                <div class="text-[10px] text-blue-700 font-bold uppercase">Step 4</div>
+                <div class="font-bold text-blue-900 mt-1">Bridge Learning</div>
+                <div class="text-[10px] text-blue-800 mt-0.5">Verified modules</div>
+            </div>
+            <div class="p-3 bg-purple-50 rounded border border-purple-200">
+                <div class="text-[10px] text-purple-700 font-bold uppercase">Step 5</div>
+                <div class="font-bold text-purple-900 mt-1">Bridge Project</div>
+                <div class="text-[10px] text-purple-800 mt-0.5">Proof of work</div>
+            </div>
+            <div class="p-3 bg-slate-900 text-white rounded shadow-sm">
+                <div class="text-[10px] text-emerald-400 font-bold uppercase">Step 6</div>
+                <div class="font-bold text-white mt-1">Destination Role</div>
+                <div class="text-[10px] text-slate-300 mt-0.5">{{ profile.desired_career_direction if profile and profile.desired_career_direction else 'Target Role' }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Transition Tools: Interactive Mapper & Gaps -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="lg:col-span-7 space-y-6">
+            <!-- Transferable Skills Interactive Mapping Tool -->
+            <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+                <h3 class="text-base font-bold text-slate-900 mb-1">Transferable Skills Identifier</h3>
+                <p class="text-xs text-slate-600 mb-4">
+                    See how competencies from your origin field map into common digital and operations roles:
+                </p>
+
+                <div class="space-y-3 text-xs">
+                    <!-- Teaching / Academia -->
+                    <div class="p-3.5 rounded border border-slate-200 bg-slate-50">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-bold text-slate-900">Teaching / Academia &rarr; Instructional Design & Technical Writing</span>
+                            <span class="text-teal-700 font-semibold">High Overlap</span>
+                        </div>
+                        <p class="text-slate-600 text-[11px] leading-relaxed">
+                            <strong>Transferable:</strong> Curriculum structuring, breaking down complex topics, audience empathy, document formatting.<br/>
+                            <strong>Bridge Skills Needed:</strong> Markdown, LMS tools, Figma basics, API documentation guidelines.
+                        </p>
+                    </div>
+
+                    <!-- Customer Support / Admin -->
+                    <div class="p-3.5 rounded border border-slate-200 bg-slate-50">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-bold text-slate-900">Customer Support / Admin &rarr; Customer Success & Operations</span>
+                            <span class="text-teal-700 font-semibold">High Overlap</span>
+                        </div>
+                        <p class="text-slate-600 text-[11px] leading-relaxed">
+                            <strong>Transferable:</strong> Escalation handling, cross-team communication, client retention, conflict resolution.<br/>
+                            <strong>Bridge Skills Needed:</strong> CRM software (HubSpot/Salesforce), SQL queries, SLA reporting dashboards.
+                        </p>
+                    </div>
+
+                    <!-- Accounting / Banking -->
+                    <div class="p-3.5 rounded border border-slate-200 bg-slate-50">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-bold text-slate-900">Accounting / Banking &rarr; FinTech Product Operations & Data Analysis</span>
+                            <span class="text-teal-700 font-semibold">Very High Overlap</span>
+                        </div>
+                        <p class="text-slate-600 text-[11px] leading-relaxed">
+                            <strong>Transferable:</strong> Ledger reconciliation, regulatory compliance, numerical precision, financial auditing.<br/>
+                            <strong>Bridge Skills Needed:</strong> Advanced Python/Pandas, automated ETL scripts, Power BI/Tableau visualization.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resume Restructuring Guidance -->
+            <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-3">
+                <h3 class="text-base font-bold text-slate-900">Functional Resume Restructuring</h3>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    When changing careers, a standard chronological resume emphasizes past job titles that do not match the target role. A <strong>Hybrid Functional Resume</strong> groups your achievements under skill categories (e.g. "Project & Process Management", "Client Communication", "Technical Tools") placed <em>above</em> your chronological employment history.
+                </p>
+                <div class="pt-2">
+                    <a href="{{ url_for('resume_hub') }}" class="px-4 py-2 bg-slate-900 text-white text-xs font-semibold rounded hover:bg-slate-800 transition inline-block">
+                        Build Hybrid Re-Entry Resume &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Bridge Learning & Project Suggestions -->
+        <div class="lg:col-span-5 space-y-6">
+            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <h3 class="font-bold text-sm text-slate-900">Recommended Bridge Projects</h3>
+                    <span class="text-xs text-slate-400">Portfolio Proof</span>
+                </div>
+                <div class="mt-3 space-y-3 text-xs">
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded">
+                        <div class="font-bold text-slate-900">Project 1: Public Domain Case Study</div>
+                        <p class="text-slate-600 mt-1">Pick a real-world product or company and author a 2-page operational audit or teardown solving an existing user pain point.</p>
+                    </div>
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded">
+                        <div class="font-bold text-slate-900">Project 2: Structured Data Dashboard</div>
+                        <p class="text-slate-600 mt-1">Clean an open government dataset (e.g. from data.gov.in) using Excel or Python, and build a 3-metric interactive dashboard.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Realistic Disclaimer -->
+            <div class="p-4 bg-slate-100 border border-slate-300 rounded text-xs text-slate-700">
+                <span class="font-bold">Transparent Commitment Notice:</span> Completing a transition roadmap provides practical skills and demonstrable portfolio evidence, but does not guarantee employment. Application success depends on candidate performance and hiring requirements.
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const intakeForm = document.getElementById('transition-intake-form');
+    const plan = document.getElementById('transition-plan');
+    const tools = document.getElementById('transition-tools');
+    const feasibilitySummary = document.getElementById('feasibility-summary');
+    const fundingSummary = document.getElementById('funding-summary');
+
+    if (!intakeForm) return;
+
+    intakeForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const idea = document.getElementById('transition-idea').value.trim();
+        const motivation = document.getElementById('transition-motivation').value.trim();
+        const time = document.getElementById('transition-time').value;
+        const budget = document.getElementById('transition-budget').value;
+
+        if (!idea || !motivation) return;
+
+        feasibilitySummary.textContent = `Your idea is worth testing because it is connected to a clear motivation: “${motivation}” Start with a small experiment for ${time} hours per week rather than making an immediate irreversible move.`;
+        fundingSummary.textContent = budget === 'none'
+            ? 'Start with a zero-cost validation: free learning, informational interviews, portfolio work, and a small pilot. Look for scholarships or public skilling support only after confirming the exact eligibility.'
+            : 'Keep spending tied to a verified gap: compare course outcomes, use staged payments where safe, and fund the next step from a small project or part-time income rather than paying for everything upfront.';
+        plan.classList.remove('hidden');
+        tools.classList.remove('hidden');
+        plan.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+});
+</script>
+{% endblock %}

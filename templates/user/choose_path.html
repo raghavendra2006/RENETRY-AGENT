@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Choose Your Career Path — ReTurn Platform{% endblock %}
+
+{% block content %}
+<div class="py-12 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-2xl mx-auto mb-10">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700 mb-3">
+            <span>Step 2 of 2</span>
+            <span>&bull;</span>
+            <span>Pathway Selection</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Choose Your Career Situation</h1>
+        <p class="text-sm text-slate-600 mt-2">
+            Select the scenario that best reflects your current standing. This configures your personalized 7-stage roadmap and opportunity matching filters. You can always adjust this later.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Path 1: Experienced + Career Gap -->
+        <form method="POST" action="{{ url_for('select_career_path') }}" class="flex flex-col">
+            <input type="hidden" name="pathway" value="EXPERIENCED_GAP">
+            <div class="h-full bg-white p-6 rounded-lg border-2 {% if current_pathway == 'EXPERIENCED_GAP' %}border-teal-700 ring-2 ring-teal-700/20{% else %}border-slate-200 hover:border-slate-400{% endif %} flex flex-col justify-between transition">
+                <div>
+                    <div class="w-10 h-10 rounded bg-slate-900 text-white flex items-center justify-center font-bold text-sm mb-4">01</div>
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-teal-800">Pathway 1</span>
+                    <h2 class="text-xl font-bold text-slate-900 mt-1 mb-3">Experienced + Career Gap</h2>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                        For women who have prior formal professional experience but took a break for caregiving, family relocation, personal health, or sabbaticals.
+                    </p>
+                    <div class="border-t border-slate-100 pt-3 space-y-1.5 text-xs text-slate-500">
+                        <div class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">&check;</span> Corporate returnships & private sector</div>
+                        <div class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">&check;</span> Public sector age relaxations</div>
+                        <div class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">&check;</span> Resume modernization & gap framing</div>
+                        <div class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">&check;</span> Entrepreneurship / Stand-Up India loans</div>
+                    </div>
+                </div>
+                <div class="pt-6">
+                    <button type="submit" class="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded transition shadow-sm">
+                        Select Experienced Pathway &rarr;
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Path 2: No Previous Experience -->
+        <form method="POST" action="{{ url_for('select_career_path') }}" class="flex flex-col">
+            <input type="hidden" name="pathway" value="NO_EXPERIENCE">
+            <div class="h-full bg-white p-6 rounded-lg border-2 {% if current_pathway == 'NO_EXPERIENCE' %}border-teal-700 ring-2 ring-teal-700/20{% else %}border-slate-200 hover:border-slate-400{% endif %} flex flex-col justify-between transition">
+                <div>
+                    <div class="w-10 h-10 rounded bg-slate-900 text-white flex items-center justify-center font-bold text-sm mb-4">02</div>
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-teal-800">Pathway 2</span>
+                    <h2 class="text-xl font-bold text-slate-900 mt-1 mb-3">No Previous Experience</h2>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                        A constructive, beginner-friendly path for recent graduates or home-makers entering the formal workforce for the first time without prior employment history.
+                    </p>
+                    <div class="border-t border-slate-100 pt-3 space-y-1.5 text-xs text-slate-500">
+                        <div class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">&check;</span> Core interest & skill discovery</div>
+                        <div class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">&check;</span> Verified free foundational courses</div>
+                        <div class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">&check;</span> First Professional Resume Builder</div>
+                        <div class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">&check;</span> Entry-level & apprenticeship matching</div>
+                    </div>
+                </div>
+                <div class="pt-6">
+                    <button type="submit" class="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded transition shadow-sm">
+                        Select Beginner Pathway &rarr;
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Path 3: Career Shift -->
+        <form method="POST" action="{{ url_for('select_career_path') }}" class="flex flex-col">
+            <input type="hidden" name="pathway" value="CAREER_SHIFT">
+            <div class="h-full bg-white p-6 rounded-lg border-2 {% if current_pathway == 'CAREER_SHIFT' %}border-teal-700 ring-2 ring-teal-700/20{% else %}border-slate-200 hover:border-slate-400{% endif %} flex flex-col justify-between transition">
+                <div>
+                    <div class="w-10 h-10 rounded bg-slate-900 text-white flex items-center justify-center font-bold text-sm mb-4">03</div>
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-teal-800">Pathway 3</span>
+                    <h2 class="text-xl font-bold text-slate-900 mt-1 mb-3">Career Shift & Transition</h2>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                        For professionals moving from one sector (such as teaching, administration, retail, or banking) into digital technologies, operations, or product services.
+                    </p>
+                    <div class="border-t border-slate-100 pt-3 space-y-1.5 text-xs text-slate-500">
+                        <div class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">&check;</span> Transferable Skills Mapping</div>
+                        <div class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">&check;</span> Specific skill-gap identification</div>
+                        <div class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">&check;</span> Bridge project / capstone roadmap</div>
+                        <div class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">&check;</span> Hybrid functional resume re-structuring</div>
+                    </div>
+                </div>
+                <div class="pt-6">
+                    <button type="submit" class="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded transition shadow-sm">
+                        Select Career Shift &rarr;
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

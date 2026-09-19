@@ -1,0 +1,376 @@
+{% extends "base.html" %}
+
+{% block title %}ReTurn — Women Career Gap Re-Entry & Opportunity Platform{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-white border-b border-slate-200 py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <!-- Left Hero Content -->
+            <div class="lg:col-span-7 space-y-6">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700">
+                    <span class="w-2 h-2 rounded-full bg-teal-600"></span>
+                    Verified Career Re-Entry Infrastructure
+                </div>
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                    A structured pathway back to professional work after a career break.
+                </h1>
+                <p class="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl">
+                    ReTurn provides women with practical, grounded support to resume their careers—whether returning to previous fields, starting fresh, entering public service, or building independent ventures.
+                </p>
+                <div class="pt-2 flex flex-wrap items-center gap-4">
+                    <a href="{{ url_for('auth_register') }}" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm rounded shadow-sm transition">
+                        Create Account
+                    </a>
+                    <a href="{{ url_for('explore_opportunities') }}" class="px-6 py-3 bg-white hover:bg-slate-50 text-slate-800 font-semibold text-sm rounded border border-slate-300 transition">
+                        Explore Opportunities
+                    </a>
+                    <a href="{{ url_for('learning_catalog') }}" class="px-4 py-3 text-slate-600 hover:text-slate-900 font-medium text-sm transition">
+                        Learning Resources &rarr;
+                    </a>
+                </div>
+                <p class="text-xs text-slate-400">
+                    No artificial ATS scores. No fabricated testimonials. Direct links to verified recruiters and official government gazettes.
+                </p>
+            </div>
+
+            <!-- Right Hero Visual: Career Re-Entry Flowchart -->
+            <div class="lg:col-span-5">
+                <div class="bg-slate-50 border border-slate-200 rounded-lg p-6 shadow-sm">
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 text-center">
+                        Practical Career Re-Entry Workflow
+                    </div>
+                    <div class="space-y-4">
+                        <!-- Step 1 -->
+                        <div class="flex items-center gap-3 bg-white p-3 rounded border border-slate-200">
+                            <div class="w-8 h-8 rounded bg-slate-100 border border-slate-300 flex items-center justify-center font-bold text-xs text-slate-700">01</div>
+                            <div class="text-xs">
+                                <div class="font-bold text-slate-800">Career Pause Context</div>
+                                <div class="text-slate-500">Acknowledge experience and duration without bias</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-center text-slate-300">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                        </div>
+                        <!-- Step 2 -->
+                        <div class="flex items-center gap-3 bg-white p-3 rounded border border-slate-200">
+                            <div class="w-8 h-8 rounded bg-teal-50 border border-teal-200 flex items-center justify-center font-bold text-xs text-teal-800">02</div>
+                            <div class="text-xs">
+                                <div class="font-bold text-slate-800">Targeted Reskilling & Resume Audit</div>
+                                <div class="text-slate-500">Close skill gaps using verified coursework & STAR bullet points</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-center text-slate-300">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                        </div>
+                        <!-- Step 3 -->
+                        <div class="flex items-center gap-3 bg-white p-3 rounded border border-slate-200">
+                            <div class="w-8 h-8 rounded bg-blue-50 border border-blue-200 flex items-center justify-center font-bold text-xs text-blue-800">03</div>
+                            <div class="text-xs">
+                                <div class="font-bold text-slate-800">Verified Opportunities Matching</div>
+                                <div class="text-slate-500">Connect with returnship programs & official public schemes</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-center text-slate-300">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                        </div>
+                        <!-- Step 4 -->
+                        <div class="flex items-center gap-3 bg-slate-900 text-white p-3 rounded shadow-sm">
+                            <div class="w-8 h-8 rounded bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-xs text-emerald-400">04</div>
+                            <div class="text-xs">
+                                <div class="font-bold text-white">Confident Career Re-Entry</div>
+                                <div class="text-slate-300">Employment, entrepreneurship, or public service</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section A: What is this platform? -->
+<section id="about" class="py-16 bg-slate-50 border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mb-10">
+            <h2 class="text-xs font-bold text-teal-800 uppercase tracking-wider mb-2">Section A</h2>
+            <h3 class="text-2xl sm:text-3xl font-bold text-slate-900">What is the ReTurn platform?</h3>
+            <p class="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">
+                A dedicated, non-stigmatizing web application designed specifically to address the structural hurdles women encounter when re-entering the workforce after caregiving, health recovery, relocation, or personal breaks.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded border border-slate-200">
+                <div class="text-xs font-bold text-slate-400 uppercase mb-2">Who It Is For</div>
+                <h4 class="font-semibold text-slate-900 text-base mb-2">Women with Career Pauses</h4>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Designed for experienced professionals returning to their field, individuals seeking first-time entry, and those navigating a career pivot into a different industry.
+                </p>
+            </div>
+
+            <div class="bg-white p-6 rounded border border-slate-200">
+                <div class="text-xs font-bold text-slate-400 uppercase mb-2">What Problem It Addresses</div>
+                <h4 class="font-semibold text-slate-900 text-base mb-2">The 'Gap Penalty' & Information Silos</h4>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Traditional hiring systems filter out non-linear resumes. ReTurn replaces automated rejection with structured skill auditing, constructive gap framing, and verified returnships.
+                </p>
+            </div>
+
+            <div class="bg-white p-6 rounded border border-slate-200">
+                <div class="text-xs font-bold text-slate-400 uppercase mb-2">What Users Can Do</div>
+                <h4 class="font-semibold text-slate-900 text-base mb-2">Actionable Re-Entry Workflow</h4>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Audit existing skills, track progress on a 7-stage roadmap, modernize your resume, evaluate startup ideas, and explore verified recruiter & government listings.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section B: Why career re-entry matters -->
+<section class="py-16 bg-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mb-10">
+            <h2 class="text-xs font-bold text-teal-800 uppercase tracking-wider mb-2">Section B</h2>
+            <h3 class="text-2xl sm:text-3xl font-bold text-slate-900">Why career re-entry matters</h3>
+            <p class="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">
+                Career pauses are a standard reality of life. However, returning to work presents practical challenges that require thoughtful preparation rather than marketing platitudes.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded">
+                <div class="font-semibold text-sm text-slate-900 mb-1">Skill Gaps</div>
+                <p class="text-xs text-slate-600 leading-relaxed">Tools and frameworks evolve rapidly. Focused refresher coursework brings candidates back to parity with current workplace demands.</p>
+            </div>
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded">
+                <div class="font-semibold text-sm text-slate-900 mb-1">Resume Gaps</div>
+                <p class="text-xs text-slate-600 leading-relaxed">Unexplained pauses trigger screening drop-offs. Strategic formatting presents gap periods as continuous learning and intentional readiness.</p>
+            </div>
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded">
+                <div class="font-semibold text-sm text-slate-900 mb-1">Confidence & Readiness</div>
+                <p class="text-xs text-slate-600 leading-relaxed">Extended time away often creates impostor syndrome. Structured milestone roadmaps re-establish professional confidence systematically.</p>
+            </div>
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded">
+                <div class="font-semibold text-sm text-slate-900 mb-1">Suitable Opportunities</div>
+                <p class="text-xs text-slate-600 leading-relaxed">Identifying employers with explicit returnship programs avoids wasted applications to companies with rigid hiring timelines.</p>
+            </div>
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded">
+                <div class="font-semibold text-sm text-slate-900 mb-1">Current Requirements</div>
+                <p class="text-xs text-slate-600 leading-relaxed">Understanding hybrid work standards, modern communication tools, and statutory relaxations ensures realistic application targeting.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section C: How the platform works -->
+<section id="how-it-works" class="py-16 bg-slate-50 border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mb-12">
+            <h2 class="text-xs font-bold text-teal-800 uppercase tracking-wider mb-2">Section C</h2>
+            <h3 class="text-2xl sm:text-3xl font-bold text-slate-900">How the platform works</h3>
+            <p class="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">
+                A simple, linear 4-step sequence designed to take you from initial assessment to active application.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="bg-white p-5 rounded border border-slate-200">
+                <div class="w-8 h-8 rounded bg-slate-900 text-white font-bold text-xs flex items-center justify-center mb-3">1</div>
+                <h4 class="font-semibold text-slate-900 text-sm mb-2">Create Profile</h4>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Document your education, skills, past roles, gap duration, and work mode preferences. No invasive or sensitive inquiries.
+                </p>
+            </div>
+
+            <div class="bg-white p-5 rounded border border-slate-200">
+                <div class="w-8 h-8 rounded bg-slate-900 text-white font-bold text-xs flex items-center justify-center mb-3">2</div>
+                <h4 class="font-semibold text-slate-900 text-sm mb-2">Select Career Path</h4>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Choose between Experienced Returnee, No Prior Experience, or Career Shift to unlock a tailored operational workspace.
+                </p>
+            </div>
+
+            <div class="bg-white p-5 rounded border border-slate-200">
+                <div class="w-8 h-8 rounded bg-slate-900 text-white font-bold text-xs flex items-center justify-center mb-3">3</div>
+                <h4 class="font-semibold text-slate-900 text-sm mb-2">Assess & Improve Readiness</h4>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Follow the interactive 7-stage roadmap, upload your resume for keyword analysis, and take verified free refresher modules.
+                </p>
+            </div>
+
+            <div class="bg-white p-5 rounded border border-slate-200">
+                <div class="w-8 h-8 rounded bg-slate-900 text-white font-bold text-xs flex items-center justify-center mb-3">4</div>
+                <h4 class="font-semibold text-slate-900 text-sm mb-2">Explore & Build Path</h4>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Apply directly to verified recruiter returnships, submit to public government schemes, or analyze your independent startup concept.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section D: Three Career Pathways -->
+<section class="py-16 bg-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mb-12">
+            <h2 class="text-xs font-bold text-teal-800 uppercase tracking-wider mb-2">Section D</h2>
+            <h3 class="text-2xl sm:text-3xl font-bold text-slate-900">Three distinct career pathways</h3>
+            <p class="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">
+                Every woman's career circumstance is different. ReTurn provides three dedicated operational tracks:
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Path 1 -->
+            <div class="p-6 rounded border border-slate-200 bg-slate-50 flex flex-col justify-between">
+                <div>
+                    <div class="inline-block px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider bg-slate-200 text-slate-800 mb-3">Pathway 1</div>
+                    <h4 class="font-bold text-slate-900 text-base mb-2">Experienced + Career Gap</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                        For women with prior professional employment who paused their careers. Offers structured paths across Private Sector Returnships, Government Opportunities with age relaxations, or Startup & Freelance ventures.
+                    </p>
+                </div>
+                <a href="{{ url_for('path_experienced') }}" class="text-xs font-semibold text-teal-800 hover:text-teal-900">Explore Experienced Pathway &rarr;</a>
+            </div>
+
+            <!-- Path 2 -->
+            <div class="p-6 rounded border border-slate-200 bg-slate-50 flex flex-col justify-between">
+                <div>
+                    <div class="inline-block px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider bg-slate-200 text-slate-800 mb-3">Pathway 2</div>
+                    <h4 class="font-bold text-slate-900 text-base mb-2">No Previous Experience</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                        A constructive, non-stigmatizing entry track for graduates or home-makers entering the formal workforce for the first time. Includes foundational skill mapping, free learning, and a First-Time Resume Builder.
+                    </p>
+                </div>
+                <a href="{{ url_for('path_beginner') }}" class="text-xs font-semibold text-teal-800 hover:text-teal-900">Explore Beginner Pathway &rarr;</a>
+            </div>
+
+            <!-- Path 3 -->
+            <div class="p-6 rounded border border-slate-200 bg-slate-50 flex flex-col justify-between">
+                <div>
+                    <div class="inline-block px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider bg-slate-200 text-slate-800 mb-3">Pathway 3</div>
+                    <h4 class="font-bold text-slate-900 text-base mb-2">Career Shift & Transition</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                        For professionals wishing to transition from their previous domain (e.g., teaching, administration, retail) into high-demand digital roles. Features Transferable Skill Mapping and functional resume reframing.
+                    </p>
+                </div>
+                <a href="{{ url_for('path_transition') }}" class="text-xs font-semibold text-teal-800 hover:text-teal-900">Explore Career Shift Pathway &rarr;</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section E: Platform Capabilities -->
+<section class="py-16 bg-slate-50 border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mb-12">
+            <h2 class="text-xs font-bold text-teal-800 uppercase tracking-wider mb-2">Section E</h2>
+            <h3 class="text-2xl sm:text-3xl font-bold text-slate-900">Platform capabilities</h3>
+            <p class="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">
+                Only features that are fully implemented and functional in this application:
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-white p-5 rounded border border-slate-200">
+                <div class="font-bold text-slate-900 text-sm mb-1">1. Profile Assessment</div>
+                <p class="text-xs text-slate-600">Evaluates qualifications, skills, and work preferences to suggest the best re-entry route.</p>
+            </div>
+            <div class="bg-white p-5 rounded border border-slate-200">
+                <div class="font-bold text-slate-900 text-sm mb-1">2. 7-Stage Career Roadmap</div>
+                <p class="text-xs text-slate-600">Track tasks from profile completion through learning, practice, resume, and applications.</p>
+            </div>
+            <div class="bg-white p-5 rounded border border-slate-200">
+                <div class="font-bold text-slate-900 text-sm mb-1">3. Resume Analysis (PDF/DOCX)</div>
+                <p class="text-xs text-slate-600">Extracts actual file text, auditing missing sections, weak action verbs, and role keywords.</p>
+            </div>
+            <div class="bg-white p-5 rounded border border-slate-200">
+                <div class="font-bold text-slate-900 text-sm mb-1">4. Resume Improvement Engine</div>
+                <p class="text-xs text-slate-600">Provides concrete STAR rewrites and an editable modernized re-entry resume draft.</p>
+            </div>
+            <div class="bg-white p-5 rounded border border-slate-200">
+                <div class="font-bold text-slate-900 text-sm mb-1">5. Job Recommendations</div>
+                <p class="text-xs text-slate-600">Filters opportunities from verified recruiters and clearly labeled external public portals.</p>
+            </div>
+            <div class="bg-white p-5 rounded border border-slate-200">
+                <div class="font-bold text-slate-900 text-sm mb-1">6. Government Opportunity Hub</div>
+                <p class="text-xs text-slate-600">Search verifiable public schemes (Stand-Up India, Mudra, WOS-A) with official portal links.</p>
+            </div>
+            <div class="bg-white p-5 rounded border border-slate-200">
+                <div class="font-bold text-slate-900 text-sm mb-1">7. Startup / Freelance Analyzer</div>
+                <p class="text-xs text-slate-600">Analyzes business ideas, problem clarity, MVP stages, and realistic scheme eligibility.</p>
+            </div>
+            <div class="bg-white p-5 rounded border border-slate-200">
+                <div class="font-bold text-slate-900 text-sm mb-1">8. Verified Learning Catalog</div>
+                <p class="text-xs text-slate-600">Direct integration with authentic free platforms (SWAYAM, NPTEL, Skill India, FreeCodeCamp).</p>
+            </div>
+            <div class="bg-white p-5 rounded border border-slate-200">
+                <div class="font-bold text-slate-900 text-sm mb-1">9. ReTurn Career Assistant</div>
+                <p class="text-xs text-slate-600">On-demand factual guidance for framing career gaps, navigating roadmap milestones, and government schemes.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Trust & Source Transparency Section -->
+<section class="py-16 bg-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mb-10">
+            <span class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 mb-2">
+                Transparency Standard
+            </span>
+            <h3 class="text-2xl sm:text-3xl font-bold text-slate-900">Job Authenticity & Trust System</h3>
+            <p class="mt-3 text-slate-600 text-sm leading-relaxed">
+                We do not claim all jobs are genuine simply because they appear here. Every listing displays a verified badge indicating its source:
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="p-5 border border-emerald-200 bg-emerald-50/40 rounded">
+                <div class="badge-verified-recruiter mb-3">Verified Recruiter</div>
+                <h4 class="font-semibold text-slate-900 text-sm mb-1">Direct Employer Verification</h4>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    The recruiter's corporate domain and employment authorization have been manually reviewed and approved by platform administrators.
+                </p>
+            </div>
+
+            <div class="p-5 border border-blue-200 bg-blue-50/40 rounded">
+                <div class="badge-government-source mb-3">Official Government Source</div>
+                <h4 class="font-semibold text-slate-900 text-sm mb-1">Public Gazette & Ministry Portals</h4>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Sourced directly from verified government bodies (.gov.in / .nic.in). ReTurn provides eligibility info and links to the official portal.
+                </p>
+            </div>
+
+            <div class="p-5 border border-amber-200 bg-amber-50/40 rounded">
+                <div class="badge-external-source mb-3">External Job Source</div>
+                <h4 class="font-semibold text-slate-900 text-sm mb-1">External Public Opportunities</h4>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Clearly flagged as external. We advise candidates: <em>"Always verify the vacancy on the employer's official careers site before submitting credentials."</em>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Final CTA Section -->
+<section class="py-16 bg-slate-900 text-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+        <h3 class="text-2xl sm:text-3xl font-bold">Ready to take the next step in your career journey?</h3>
+        <p class="text-slate-300 text-sm max-w-xl mx-auto leading-relaxed">
+            Create an account, select your career situation, and receive an immediate actionable roadmap with zero marketing fluff.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4 pt-2">
+            <a href="{{ url_for('auth_register') }}" class="px-6 py-3 bg-white hover:bg-slate-100 text-slate-900 font-bold text-sm rounded shadow-sm transition">
+                Create Free Account
+            </a>
+            <a href="{{ url_for('recruiter_register') }}" class="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm rounded border border-slate-700 transition">
+                Register as Recruiter
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

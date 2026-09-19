@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}User Registry — Admin Console — ReTurn Platform{% endblock %}
+
+{% block content %}
+<div class="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-6">
+        <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+            <a href="{{ url_for('admin_dashboard') }}" class="hover:underline">Admin Console</a>
+            <span>&bull;</span>
+            <span class="text-slate-800 font-semibold">User Registry</span>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">User Registry & Account Control</h1>
+                <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                    Manage active candidate accounts, view career pathways, toggle platform access, or remove accounts.
+                </p>
+            </div>
+            <div>
+                <span class="px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
+                    {{ users|length }} Total Registered Users
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <table class="min-w-full divide-y divide-slate-200 text-xs">
+            <thead class="bg-slate-50">
+                <tr>
+                    <th class="px-4 py-3 text-left font-bold text-slate-700 uppercase tracking-wider">User</th>
+                    <th class="px-4 py-3 text-left font-bold text-slate-700 uppercase tracking-wider">Role</th>
+                    <th class="px-4 py-3 text-left font-bold text-slate-700 uppercase tracking-wider">Pathway</th>
+                    <th class="px-4 py-3 text-left font-bold text-slate-700 uppercase tracking-wider">Status</th>
+                    <th class="px-4 py-3 text-left font-bold text-slate-700 uppercase tracking-wider">Profile</th>
+                    <th class="px-4 py-3 text-left font-bold text-slate-700 uppercase tracking-wider">Registered</th>
+                    <th class="px-4 py-3 text-right font-bold text-slate-700 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 bg-white">
+                {% for u in users %}
+                    <tr class="hover:bg-slate-50/50 transition">
+                        <td class="px-4 py-3">
+                            <div class="font-bold text-slate-900">{{ u.full_name }}</div>
+                            <div class="text-slate-500">{{ u.email }}</div>
+                        </td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-0.5 rounded text-[11px] font-semibold
+                                {% if u.role == 'ADMIN' %} bg-purple-50 text-purple-800 border border-purple-200
+                                {% elif u.role == 'RECRUITER' %} bg-teal-50 text-teal-800 border border-teal-200
+                                {% else %} bg-slate-100 text-slate-800 {% endif %}">
+                                {{ u.role }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-slate-700">
+                            {{ u.pathway or 'Not selected' }}
+                        </td>
+                        <td class="px-4 py-3">
+                            {% if u.is_active == 1 or u.is_active is none %}
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                    Active
+                                </span>
+                            {% else %}
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">
+                                    Deactivated
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3">
+                            {% if u.profile_completed %}
+                                <span class="text-emerald-700 font-semibold">&check; Complete</span>
+                            {% else %}
+                                <span class="text-amber-700 font-semibold">Incomplete</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3 text-slate-400">
+                            {{ u.created_at[:10] }}
+                        </td>
+                        <td class="px-4 py-3 text-right">
+                            <div class="inline-flex items-center gap-1.5">
+                                {% if u.id != session.get('user_id') %}
+                                    <form method="POST" action="{{ url_for('admin_toggle_user', user_id=u.id) }}" class="inline">
+                                        <button type="submit" class="px-2.5 py-1 text-[11px] font-semibold rounded border border-slate-300 hover:bg-slate-100 text-slate-700 transition">
+                                            {% if u.is_active == 1 or u.is_active is none %}Deactivate{% else %}Activate{% endif %}
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ url_for('admin_delete_user', user_id=u.id) }}" class="inline" onsubmit="return confirm('Permanently delete user {{ u.email }}? This cannot be undone.');">
+                                        <button type="submit" class="px-2.5 py-1 text-[11px] font-semibold rounded border border-rose-200 text-rose-600 hover:bg-rose-50 transition">
+                                            Delete
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <span class="text-[11px] text-slate-400 font-medium italic">Current Admin</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

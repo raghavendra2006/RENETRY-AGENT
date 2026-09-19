@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Create User Account — ReTurn Platform{% endblock %}
+
+{% block content %}
+<div class="py-12 sm:py-16">
+    <div class="max-w-md mx-auto px-4 sm:px-6">
+        <div class="bg-white p-8 rounded-lg border border-slate-200 shadow-sm">
+            <div class="mb-6 text-center">
+                <span class="w-10 h-10 rounded bg-slate-900 text-white inline-flex items-center justify-center font-bold text-sm mb-3">RT</span>
+                <h2 class="text-2xl font-bold text-slate-900">Create Account</h2>
+                <p class="text-xs text-slate-500 mt-1">Join the career re-entry platform. You'll complete your profile in the next step.</p>
+            </div>
+
+            <form method="POST" action="{{ url_for('auth_register') }}" class="space-y-4">
+                <div>
+                    <label for="full_name" class="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
+                    <input type="text" id="full_name" name="full_name" required placeholder="e.g. Sunita Verma"
+                        class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900">
+                </div>
+
+                <div>
+                    <label for="email" class="block text-xs font-semibold text-slate-700 mb-1">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="you@example.com"
+                        class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-xs font-semibold text-slate-700 mb-1">Password</label>
+                    <input type="password" id="password" name="password" minlength="8" required placeholder="At least 8 characters"
+                        class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900">
+                </div>
+
+                <div>
+                    <label for="confirm_password" class="block text-xs font-semibold text-slate-700 mb-1">Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" minlength="8" required placeholder="Re-enter password"
+                        class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900">
+                </div>
+
+                <div class="text-[11px] text-slate-500 leading-normal">
+                    By registering, you agree that your details will be handled strictly for platform navigation and career matching. We never sell personal data.
+                </div>
+
+                <button type="submit" class="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm rounded shadow-sm transition">
+                    Create Account & Continue to Profile
+                </button>
+            </form>
+
+            <div class="mt-6 pt-4 border-t border-slate-200 text-center text-xs text-slate-600">
+                Already have an account? <a href="{{ url_for('auth_login') }}" class="font-semibold text-teal-700 hover:underline">Sign In</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

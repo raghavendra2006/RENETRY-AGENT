@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Saved Opportunities & Bookmarks — ReTurn Platform{% endblock %}
+
+{% block content %}
+<div class="py-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-6">
+        <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+            <a href="{{ url_for('user_dashboard') }}" class="hover:underline">Dashboard</a>
+            <span>&bull;</span>
+            <span class="text-teal-800 font-semibold">Bookmarks</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Saved Opportunities & Bookmarks</h1>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1">
+            Keep track of corporate returnships, government schemes, and learning resources you intend to pursue.
+        </p>
+    </div>
+
+    {% if bookmarks %}
+        <div class="bg-white rounded-lg border border-slate-200 shadow-sm divide-y divide-slate-100">
+            {% for b in bookmarks %}
+                <div class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700 uppercase tracking-wider">
+                                {{ b.item_type }}
+                            </span>
+                            <span class="text-xs text-slate-400">Saved on {{ b.saved_at[:10] }}</span>
+                        </div>
+                        <h3 class="font-bold text-sm text-slate-900">{{ b.title }}</h3>
+                        <p class="text-xs text-slate-600 mt-0.5">{{ b.subtitle }}</p>
+                    </div>
+
+                    <div class="shrink-0 flex items-center gap-2">
+                        <a href="{{ b.url }}" class="px-3 py-1.5 bg-slate-900 text-white text-xs font-semibold rounded hover:bg-slate-800 transition">
+                            View Opportunity &rarr;
+                        </a>
+                        <form method="POST" action="{{ url_for('remove_bookmark', bookmark_id=b.id) }}">
+                            <button type="submit" class="px-2 py-1.5 text-xs text-rose-600 hover:bg-rose-50 rounded border border-rose-200 transition">
+                                Remove
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div class="bg-white p-12 rounded-lg border border-slate-200 text-center max-w-lg mx-auto space-y-3">
+            <div class="text-xl font-bold text-slate-400">☆</div>
+            <h3 class="text-base font-bold text-slate-900">No Opportunities Saved Yet</h3>
+            <p class="text-xs text-slate-500">
+                While exploring verified recruiter jobs or public government schemes, click the "☆ Save" button to bookmark items here for easy access.
+            </p>
+            <div class="pt-2">
+                <a href="{{ url_for('explore_opportunities') }}" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded transition">
+                    Explore Opportunities &rarr;
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

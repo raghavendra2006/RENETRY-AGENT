@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Vacancy — ReTurn Recruiter Portal{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Breadcrumb & Header -->
+    <div class="mb-6">
+        <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+            <a href="{{ url_for('recruiter_dashboard') }}" class="hover:underline">Recruiter Portal</a>
+            <span>&bull;</span>
+            <a href="{{ url_for('manage_recruiter_jobs') }}" class="hover:underline">Manage Vacancies</a>
+            <span>&bull;</span>
+            <span class="text-teal-800 font-semibold">Edit Vacancy</span>
+        </div>
+        <h1 class="text-2xl font-bold text-slate-900">Edit Vacancy: {{ job.title }}</h1>
+        <p class="text-xs text-slate-500 mt-1">Updates to active listings will remain visible or require re-moderation if substantial changes are made.</p>
+    </div>
+
+    <!-- Edit Form -->
+    <div class="bg-white rounded-xl border border-slate-200 p-6 md:p-8 shadow-sm">
+        <form method="POST" action="{{ url_for('edit_recruiter_job', job_id=job.id) }}" class="space-y-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                    <label for="title" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                        Job Title <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="text" id="title" name="title" value="{{ job.title }}" required
+                           class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600">
+                </div>
+
+                <div>
+                    <label for="work_mode" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                        Work Mode <span class="text-rose-500">*</span>
+                    </label>
+                    <select id="work_mode" name="work_mode" required
+                            class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600 bg-white">
+                        <option value="Remote" {% if job.work_mode == 'Remote' %}selected{% endif %}>Remote</option>
+                        <option value="Hybrid" {% if job.work_mode == 'Hybrid' %}selected{% endif %}>Hybrid</option>
+                        <option value="On-Site" {% if job.work_mode == 'On-Site' %}selected{% endif %}>On-Site</option>
+                        <option value="Flexible / Part-Time" {% if job.work_mode == 'Flexible / Part-Time' %}selected{% endif %}>Flexible / Part-Time</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div>
+                    <label for="location" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                        Location / Base City <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="text" id="location" name="location" value="{{ job.location }}" required
+                           class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600">
+                </div>
+
+                <div>
+                    <label for="experience_level" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                        Experience Level
+                    </label>
+                    <input type="text" id="experience_level" name="experience_level" value="{{ job.experience_level }}" placeholder="e.g. Mid-Level (2-5 yrs)"
+                           class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600">
+                </div>
+
+                <div>
+                    <label for="salary_range" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                        Compensation / Stipend
+                    </label>
+                    <input type="text" id="salary_range" name="salary_range" value="{{ job.salary_range }}" placeholder="e.g. ₹6-9 LPA or Market standard"
+                           class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                    <label for="career_gap_tolerated_min" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                        Minimum Gap Welcomed (Years)
+                    </label>
+                    <input type="number" id="career_gap_tolerated_min" name="career_gap_tolerated_min" value="{{ job.career_gap_tolerated_min }}" min="0" max="20"
+                           class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600">
+                </div>
+
+                <div>
+                    <label for="career_gap_tolerated_max" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                        Maximum Gap Welcomed (Years)
+                    </label>
+                    <input type="number" id="career_gap_tolerated_max" name="career_gap_tolerated_max" value="{{ job.career_gap_tolerated_max }}" min="0" max="25"
+                           class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600">
+                </div>
+            </div>
+
+            <div>
+                <label for="description" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Role Description & Expectations <span class="text-rose-500">*</span>
+                </label>
+                <textarea id="description" name="description" rows="5" required
+                          class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600">{{ job.description }}</textarea>
+            </div>
+
+            <div>
+                <label for="requirements" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Key Technical & Transferable Skills Required
+                </label>
+                <textarea id="requirements" name="requirements" rows="3"
+                          class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600"
+                          placeholder="Comma-separated or bullet list: Python, SQL, Project Management, Agile">{{ job.requirements }}</textarea>
+            </div>
+
+            <div>
+                <label for="benefits" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Returnee-Friendly Perks & Mentorship
+                </label>
+                <textarea id="benefits" name="benefits" rows="2"
+                          class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600"
+                          placeholder="e.g. Dedicated 60-day buddy, flexible core hours, childcare subsidy">{{ job.benefits }}</textarea>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                <a href="{{ url_for('manage_recruiter_jobs') }}" class="text-xs font-semibold text-slate-500 hover:text-slate-800">
+                    Cancel
+                </a>
+                <button type="submit" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-lg shadow-sm transition">
+                    Update Vacancy
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Verified Learning Catalog — ReTurn Platform{% endblock %}
+
+{% block content %}
+<div class="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Verified Learning Resources</h1>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1 max-w-3xl">
+            Authentic, verified learning resources curated from accredited public and educational platforms (SWAYAM, NPTEL, Skill India, FreeCodeCamp, Harvard CS50). Sourced with zero fabrication.
+        </p>
+    </div>
+
+    <!-- Search Form -->
+    <form method="GET" action="{{ url_for('learning_catalog') }}" class="flex items-center gap-2 max-w-md mb-6">
+        <div class="relative flex-1">
+            <input type="text" name="q" value="{{ search_query or '' }}" placeholder="Search skills, topics, or providers (e.g. Python, Agile)..."
+                   class="w-full pl-9 pr-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600 bg-white shadow-sm">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+        </div>
+        {% if current_category %}
+        <input type="hidden" name="category" value="{{ current_category }}">
+        {% endif %}
+        <button type="submit" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-lg shadow-sm transition">
+            Search
+        </button>
+        {% if search_query %}
+        <a href="{{ url_for('learning_catalog') }}" class="px-3 py-2 text-xs text-slate-500 hover:text-slate-800">Clear</a>
+        {% endif %}
+    </form>
+
+    <!-- Category Filters Navigation -->
+    <div class="border-b border-slate-200 mb-8 overflow-x-auto">
+        <nav class="flex space-x-2 text-xs font-semibold py-1">
+            <a href="{{ url_for('learning_catalog', q=search_query if search_query else None) }}" class="px-3 py-2 rounded {% if not current_category %}bg-slate-900 text-white{% else %}text-slate-600 hover:bg-slate-100{% endif %}">
+                All Resources
+            </a>
+            {% for cat in categories %}
+                <a href="{{ url_for('learning_catalog', category=cat, q=search_query if search_query else None) }}" class="px-3 py-2 rounded shrink-0 {% if current_category == cat %}bg-slate-900 text-white{% else %}text-slate-600 hover:bg-slate-100{% endif %}">
+                    {{ cat }}
+                </a>
+            {% endfor %}
+        </nav>
+    </div>
+
+    <!-- Resource Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% if resources %}
+            {% for res in resources %}
+                <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm flex flex-col justify-between hover:border-slate-300 transition">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-teal-800 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
+                                {{ res.category }}
+                            </span>
+                            <span class="text-[11px] font-semibold text-emerald-700">{{ res.cost_type }}</span>
+                        </div>
+
+                        <h2 class="text-base font-bold text-slate-900">{{ res.title }}</h2>
+
+                        <div class="text-xs font-medium text-slate-600">
+                            Provider: <span class="text-slate-900">{{ res.provider }}</span>
+                        </div>
+
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            {{ res.description }}
+                        </p>
+                    </div>
+
+                    <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                        <span class="text-slate-400">{{ res.duration_estimate }}</span>
+                        <div class="flex items-center gap-2">
+                            <button class="bookmark-btn text-xs px-2.5 py-1 rounded transition flex items-center gap-1 {% if res.id in saved_learning_ids %}bg-teal-50 text-teal-800 border border-teal-300 font-semibold{% else %}text-slate-600 border border-slate-200 hover:bg-slate-50{% endif %}" data-item-type="LEARNING" data-item-id="{{ res.id }}">
+                                <span>{% if res.id in saved_learning_ids %}★ Saved{% else %}☆ Save{% endif %}</span>
+                            </button>
+                            {% if res.url.startswith('http') %}
+                                <a href="{{ res.url }}" target="_blank" rel="noopener noreferrer" class="font-bold text-teal-800 hover:underline flex items-center gap-0.5">
+                                    <span>Access Course</span>
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                </a>
+                            {% else %}
+                                <a href="{{ res.url }}" class="font-bold text-teal-800 hover:underline">
+                                    View Details &rarr;
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <!-- Honest Empty State -->
+            <div class="col-span-full bg-white p-12 rounded-lg border border-slate-200 text-center max-w-xl mx-auto space-y-3">
+                <div class="text-xl font-bold text-slate-400">📚</div>
+                <h3 class="text-base font-bold text-slate-900">No Learning Resources Found</h3>
+                <p class="text-xs text-slate-500">
+                    No verified courses match your current search query or category filter. All platform resources must be verified from accredited institutions before publication.
+                </p>
+                <div class="pt-2">
+                    <a href="{{ url_for('learning_catalog') }}" class="px-4 py-2 bg-slate-900 text-white text-xs font-semibold rounded hover:bg-slate-800 transition">
+                        View All Categories &rarr;
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}Job Moderation Queue — Admin Console — ReTurn Platform{% endblock %}
+
+{% block content %}
+<div class="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-8">
+        <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+            <a href="{{ url_for('admin_dashboard') }}" class="hover:underline">Admin Console</a>
+            <span>&bull;</span>
+            <span class="text-slate-800 font-semibold">Job Moderation</span>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Job Vacancy Moderation</h1>
+                <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                    Review incoming recruiter submissions, verify adherence to career-break returnee guidelines, and manage live listings.
+                </p>
+            </div>
+            <div>
+                <span class="px-3 py-1.5 rounded-full text-xs font-semibold {% if pending_jobs and pending_jobs|length > 0 %}bg-amber-100 text-amber-800 border border-amber-300{% else %}bg-slate-100 text-slate-600{% endif %}">
+                    {{ pending_jobs|length if pending_jobs else 0 }} Pending Moderation
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 1: Pending Moderation Queue -->
+    <div class="mb-12">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-4">
+            <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+                <span>Pending Moderation Queue</span>
+            </h2>
+            <span class="text-xs text-slate-500">Recruiter submissions requiring review before appearing in candidate feeds</span>
+        </div>
+
+        {% if pending_jobs and pending_jobs|length > 0 %}
+            <div class="space-y-4">
+                {% for job in pending_jobs %}
+                    <div class="bg-white rounded-xl border-2 border-amber-200 shadow-sm p-6 space-y-4">
+                        <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                            <div>
+                                <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                                    <span class="px-2.5 py-0.5 text-xs font-bold rounded bg-amber-100 text-amber-900 border border-amber-300">
+                                        Pending Approval
+                                    </span>
+                                    <span class="text-xs font-semibold text-slate-700">{{ job.company_name }}</span>
+                                    <span class="text-slate-400">&bull;</span>
+                                    <span class="text-xs text-slate-500">{{ job.work_mode }} &bull; {{ job.location }}</span>
+                                    {% if job.salary_range %}
+                                    <span class="text-slate-400">&bull;</span>
+                                    <span class="text-xs text-slate-600 font-medium">{{ job.salary_range }}</span>
+                                    {% endif %}
+                                </div>
+                                <h3 class="text-lg font-bold text-slate-900">{{ job.title }}</h3>
+                                <div class="text-xs text-slate-500 mt-1">
+                                    Welcomed Gap: <strong>{{ job.career_gap_tolerated_min or 0 }} to {{ job.career_gap_tolerated_max or 15 }} years</strong> &bull;
+                                    Level: {{ job.experience_level or 'Mid-Level' }} &bull;
+                                    Submitted on {{ job.posted_at[:10] }}
+                                </div>
+                            </div>
+
+                            <!-- Moderation Action Forms -->
+                            <div class="flex flex-wrap items-center gap-3 shrink-0">
+                                <!-- Quick Approve -->
+                                <form method="POST" action="{{ url_for('admin_review_job', job_id=job.id) }}">
+                                    <input type="hidden" name="decision" value="APPROVE">
+                                    <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-lg shadow-sm transition">
+                                        ✓ Approve & Publish
+                                    </button>
+                                </form>
+
+                                <!-- Reject with Reason Trigger -->
+                                <button type="button" onclick="toggleRejectBox({{ job.id }})" class="px-3.5 py-2 bg-white border border-rose-300 text-rose-700 hover:bg-rose-50 font-semibold text-xs rounded-lg shadow-sm transition">
+                                    ✕ Reject
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Description & Requirements Preview -->
+                        <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-2">
+                            <div>
+                                <strong class="text-slate-900">Role Description:</strong>
+                                <p class="mt-0.5 whitespace-pre-wrap">{{ job.description }}</p>
+                            </div>
+                            {% if job.requirements %}
+                            <div class="pt-2 border-t border-slate-200">
+                                <strong class="text-slate-900">Requirements:</strong>
+                                <p class="mt-0.5">{{ job.requirements }}</p>
+                            </div>
+                            {% endif %}
+                            {% if job.benefits %}
+                            <div class="pt-2 border-t border-slate-200">
+                                <strong class="text-slate-900">Returnee Benefits:</strong>
+                                <p class="mt-0.5">{{ job.benefits }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Collapsible Rejection Form -->
+                        <div id="reject-box-{{ job.id }}" class="hidden p-4 rounded-lg bg-rose-50 border border-rose-200">
+                            <form method="POST" action="{{ url_for('admin_review_job', job_id=job.id) }}" class="space-y-3">
+                                <input type="hidden" name="decision" value="REJECT">
+                                <label class="block text-xs font-bold text-rose-900 uppercase tracking-wider">
+                                    Reason for Rejection (Recruiter will be notified):
+                                </label>
+                                <input type="text" name="rejection_notes" required placeholder="e.g. Inadequate returnee support, vague description, or duplicate listing."
+                                       class="w-full px-3 py-2 text-xs border border-rose-300 rounded-lg focus:outline-none focus:border-rose-600 bg-white">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button type="button" onclick="toggleRejectBox({{ job.id }})" class="px-3 py-1.5 text-xs text-slate-600 hover:text-slate-800">
+                                        Cancel
+                                    </button>
+                                    <button type="submit" class="px-3.5 py-1.5 bg-rose-700 hover:bg-rose-800 text-white font-semibold text-xs rounded shadow-sm transition">
+                                        Confirm Rejection
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="bg-white p-8 rounded-xl border border-slate-200 text-center text-xs text-slate-500">
+                <div class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-2 font-bold text-sm">
+                    ✓
+                </div>
+                <strong>Moderation queue clear.</strong> There are no pending recruiter submissions awaiting review.
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Section 2: All Platform Listings -->
+    <div>
+        <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-4">
+            <h2 class="text-base font-bold text-slate-900">All Platform Listings (Reviewed & External)</h2>
+            <span class="text-xs text-slate-500">{{ reviewed_jobs|length if reviewed_jobs else jobs|length }} total listings</span>
+        </div>
+
+        <div class="space-y-3">
+            {% for job in (reviewed_jobs or jobs) %}
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2 mb-1">
+                            <!-- Status Badges -->
+                            {% if job.approval_status == 'APPROVED' %}
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
+                                    Approved
+                                </span>
+                            {% elif job.approval_status == 'REJECTED' %}
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-rose-50 text-rose-800 border border-rose-200">
+                                    Declined
+                                </span>
+                            {% elif job.approval_status == 'PENDING' %}
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
+                                    Pending
+                                </span>
+                            {% endif %}
+
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded {% if job.is_active %}bg-teal-50 text-teal-800 border border-teal-200{% else %}bg-slate-200 text-slate-600{% endif %}">
+                                {% if job.is_active %}Live{% else %}Inactive{% endif %}
+                            </span>
+
+                            <span class="text-xs font-medium text-slate-500">Source: {{ job.source_type }} &bull; {{ job.location }}</span>
+                        </div>
+                        <h3 class="text-sm font-bold text-slate-900">{{ job.title }}</h3>
+                        <div class="text-xs text-slate-600">{{ job.company_name }} &bull; Posted {{ job.posted_at[:10] }}</div>
+                        {% if job.rejection_notes %}
+                        <div class="text-[11px] text-rose-700 mt-1">Rejection feedback: {{ job.rejection_notes }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="shrink-0 flex items-center gap-2">
+                        <form method="POST" action="{{ url_for('admin_toggle_job', job_id=job.id) }}">
+                            <button type="submit" class="px-3 py-1.5 text-xs font-semibold rounded border border-slate-300 text-slate-700 hover:bg-slate-100 transition shadow-sm">
+                                {% if job.is_active %}Deactivate{% else %}Activate{% endif %}
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ url_for('admin_delete_job', job_id=job.id) }}" onsubmit="return confirm('Are you sure you want to permanently delete this listing?');">
+                            <button type="submit" class="px-3 py-1.5 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 rounded border border-rose-200 transition shadow-sm">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleRejectBox(jobId) {
+    const box = document.getElementById(`reject-box-${jobId}`);
+    if (box) {
+        box.classList.toggle('hidden');
+    }
+}
+</script>
+{% endblock %}

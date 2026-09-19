@@ -1,0 +1,304 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Vacancies & Applicants — Recruiter Portal — ReTurn Platform{% endblock %}
+
+{% block content %}
+<div class="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-200 gap-4 mb-6">
+        <div>
+            <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                <a href="{{ url_for('recruiter_dashboard') }}" class="hover:underline">Recruiter Portal</a>
+                <span>&bull;</span>
+                <span class="text-teal-800 font-semibold">Vacancies & Applicants</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Manage Job Vacancies</h1>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                Track moderation approval status, manage open listings, and review applications submitted by returning candidates.
+            </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <a href="{{ url_for('recruiter_profile') }}" class="px-3.5 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold text-xs rounded-lg transition shadow-sm">
+                Company Profile
+            </a>
+            <a href="{{ url_for('post_job') }}" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-lg transition shadow-sm">
+                + Post New Vacancy
+            </a>
+        </div>
+    </div>
+
+    <!-- Vacancies List -->
+    <div class="space-y-6">
+        {% if jobs %}
+            {% for job in jobs %}
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-5 border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-50">
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                                <!-- Moderation Status Badge -->
+                                {% if job.approval_status == 'PENDING' %}
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-300">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                        Pending Admin Review
+                                    </span>
+                                {% elif job.approval_status == 'REJECTED' %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-800 border border-rose-300">
+                                        Declined by Admin
+                                    </span>
+                                {% else %}
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                                        ✓ Platform Approved
+                                    </span>
+                                {% endif %}
+
+                                <!-- Active State -->
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded {% if job.is_active %}bg-teal-50 text-teal-800 border border-teal-200{% else %}bg-slate-200 text-slate-600{% endif %}">
+                                    {% if job.is_active %}Open for Applications{% else %}Paused / Closed{% endif %}
+                                </span>
+
+                                <span class="text-xs text-slate-500">&bull; {{ job.work_mode }} &bull; {{ job.location }}</span>
+                            </div>
+
+                            <h2 class="text-lg font-bold text-slate-900">{{ job.title }}</h2>
+                            <div class="text-xs text-slate-500 mt-0.5">
+                                Posted on {{ job.posted_at[:10] }}
+                                {% if job.salary_range %}&bull; {{ job.salary_range }}{% endif %}
+                            </div>
+
+                            {% if job.approval_status == 'REJECTED' and job.rejection_notes %}
+                            <div class="mt-2.5 p-3 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-800">
+                                <strong class="font-bold">Admin Moderation Feedback:</strong> {{ job.rejection_notes }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Actions: Edit, Toggle Status, Delete -->
+                        <div class="flex flex-wrap items-center gap-2 shrink-0">
+                            <a href="{{ url_for('edit_recruiter_job', job_id=job.id) }}" class="px-3 py-1.5 text-xs font-semibold rounded border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 transition shadow-sm">
+                                Edit Vacancy
+                            </a>
+
+                            <form method="POST" action="{{ url_for('toggle_job_status', job_id=job.id) }}" class="inline">
+                                <button type="submit" class="px-3 py-1.5 text-xs font-semibold rounded border {% if job.is_active %}border-slate-300 text-slate-700 bg-white hover:bg-slate-50{% else %}border-teal-300 text-teal-800 bg-teal-50 hover:bg-teal-100{% endif %} transition shadow-sm">
+                                    {% if job.is_active %}Pause Applications{% else %}Resume Vacancy{% endif %}
+                                </button>
+                            </form>
+
+                            <form method="POST" action="{{ url_for('delete_recruiter_job', job_id=job.id) }}" class="inline" onsubmit="return confirm('Are you sure you want to permanently delete this job vacancy and its applications?');">
+                                <button type="submit" class="px-3 py-1.5 text-xs font-semibold rounded border border-rose-200 text-rose-600 bg-white hover:bg-rose-50 transition shadow-sm">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Applicants Sub-table -->
+                    <div class="p-5">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                                Applications Received ({{ job.applicants | length }})
+                            </h3>
+                        </div>
+
+                        {% if job.applicants %}
+                            <div class="divide-y divide-slate-100 text-xs">
+                                {% for app in job.applicants %}
+                                    <div class="py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                        <div class="space-y-1.5 flex-1">
+                                            <div class="flex items-center gap-2">
+                                                <span class="font-bold text-sm text-slate-900">{{ app.candidate_name }}</span>
+                                                <span class="text-slate-400">&bull;</span>
+                                                <span class="text-slate-600 font-medium">{{ app.candidate_email }}</span>
+                                                {% if app.candidate_phone %}
+                                                <span class="text-slate-400">&bull;</span>
+                                                <span class="text-slate-500">{{ app.candidate_phone }}</span>
+                                                {% endif %}
+                                            </div>
+                                            <div class="text-slate-600">
+                                                <span>Experience: <strong>{{ app.years_of_experience if app.years_of_experience is not none else 'N/A' }} yrs</strong></span>
+                                                <span class="mx-1">&bull;</span>
+                                                <span>Career Gap: <strong class="text-teal-700">{{ app.career_gap_duration or 'Not specified' }}</strong></span>
+                                                <span class="mx-1">&bull;</span>
+                                                <span>Education: {{ app.qualification or 'Not specified' }}</span>
+                                            </div>
+                                            {% if app.cover_note %}
+                                                <div class="p-2.5 bg-slate-50 rounded border border-slate-200 text-slate-700 mt-1 max-w-2xl">
+                                                    <span class="font-semibold text-slate-900">Cover Note:</span> "{{ app.cover_note }}"
+                                                </div>
+                                            {% endif %}
+                                        </div>
+
+                                        <!-- Status Update Dropdown & Resume Modal Button -->
+                                        <div class="shrink-0 flex items-center gap-3">
+                                            <!-- Application Status Changer -->
+                                            <form method="POST" action="{{ url_for('update_application_status', app_id=app.id) }}" class="flex items-center gap-1.5">
+                                                <select name="status" onchange="this.form.submit()" class="text-xs py-1.5 px-2.5 rounded-lg border border-slate-300 bg-white font-medium text-slate-800 focus:outline-none focus:border-teal-600 shadow-sm cursor-pointer">
+                                                    <option value="Submitted" {% if app.status == 'Submitted' %}selected{% endif %}>Status: Submitted</option>
+                                                    <option value="Under Review" {% if app.status == 'Under Review' %}selected{% endif %}>Status: Under Review</option>
+                                                    <option value="Shortlisted" {% if app.status == 'Shortlisted' %}selected{% endif %}>Status: Shortlisted</option>
+                                                    <option value="Interview Scheduled" {% if app.status == 'Interview Scheduled' %}selected{% endif %}>Status: Interview Scheduled</option>
+                                                    <option value="Offer Extended" {% if app.status == 'Offer Extended' %}selected{% endif %}>Status: Offer Extended</option>
+                                                    <option value="Closed" {% if app.status == 'Closed' %}selected{% endif %}>Status: Closed</option>
+                                                </select>
+                                            </form>
+
+                                            <!-- View Profile / Resume Modal Trigger -->
+                                            <button type="button" onclick="openCandidateModal({{ app.id }})" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-lg transition shadow-sm">
+                                                View Resume &rarr;
+                                            </button>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="py-6 text-center text-xs text-slate-400 bg-slate-50/50 rounded-lg border border-dashed border-slate-200">
+                                No candidate applications received for this vacancy yet.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="bg-white p-12 rounded-xl border border-slate-200 text-center max-w-xl mx-auto space-y-3">
+                <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto text-xl font-bold">
+                    📋
+                </div>
+                <h3 class="text-base font-bold text-slate-900">No Vacancies Posted</h3>
+                <p class="text-xs text-slate-500">Create your first returnship posting to attract motivated women re-entering the workforce.</p>
+                <div class="pt-2">
+                    <a href="{{ url_for('post_job') }}" class="px-4 py-2 bg-slate-900 text-white text-xs font-semibold rounded-lg hover:bg-slate-800 transition">
+                        + Post Returnee Vacancy
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Candidate Details & Resume Modal -->
+<div id="candidate-modal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-2xl w-full p-6 md:p-8 space-y-6">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div>
+                <h3 id="modal-candidate-name" class="text-lg font-bold text-slate-900">Candidate Profile</h3>
+                <p id="modal-candidate-email" class="text-xs text-slate-500"></p>
+            </div>
+            <button type="button" onclick="closeCandidateModal()" class="text-slate-400 hover:text-slate-700 text-lg font-bold p-1">
+                &times;
+            </button>
+        </div>
+
+        <div id="modal-candidate-loading" class="py-12 text-center text-xs text-slate-500">
+            <svg class="w-6 h-6 animate-spin mx-auto text-teal-600 mb-2" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Loading candidate credentials and resume...
+        </div>
+
+        <div id="modal-candidate-content" class="hidden space-y-5 text-xs">
+            <div class="grid grid-cols-2 gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                <div>
+                    <span class="text-slate-400 uppercase font-semibold text-[10px]">Previous Role:</span>
+                    <div id="modal-prev-role" class="font-bold text-slate-900 text-sm"></div>
+                </div>
+                <div>
+                    <span class="text-slate-400 uppercase font-semibold text-[10px]">Career Gap:</span>
+                    <div id="modal-gap-duration" class="font-bold text-teal-700 text-sm"></div>
+                </div>
+                <div>
+                    <span class="text-slate-400 uppercase font-semibold text-[10px]">Total Experience:</span>
+                    <div id="modal-experience" class="font-semibold text-slate-800"></div>
+                </div>
+                <div>
+                    <span class="text-slate-400 uppercase font-semibold text-[10px]">Work Preference:</span>
+                    <div id="modal-work-mode" class="font-semibold text-slate-800"></div>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="font-bold text-slate-900 uppercase tracking-wider text-[11px] mb-2">Declared Skills</h4>
+                <div id="modal-skills" class="flex flex-wrap gap-1.5"></div>
+            </div>
+
+            <div>
+                <h4 class="font-bold text-slate-900 uppercase tracking-wider text-[11px] mb-2">Resume Extract</h4>
+                <div id="modal-resume-text" class="p-4 rounded-xl bg-slate-900 text-slate-200 font-mono text-[11px] leading-relaxed max-h-60 overflow-y-auto whitespace-pre-wrap"></div>
+            </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex justify-end">
+            <button type="button" onclick="closeCandidateModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-lg transition">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function openCandidateModal(appId) {
+    const modal = document.getElementById('candidate-modal');
+    const loading = document.getElementById('modal-candidate-loading');
+    const content = document.getElementById('modal-candidate-content');
+    
+    modal.classList.remove('hidden');
+    loading.classList.remove('hidden');
+    content.classList.add('hidden');
+
+    try {
+        const resp = await fetch(`/recruiter/applications/${appId}/candidate`);
+        const data = await resp.json();
+
+        if (resp.ok && data.success) {
+            document.getElementById('modal-candidate-name').textContent = data.candidate.name;
+            document.getElementById('modal-candidate-email').textContent = data.candidate.email + (data.candidate.phone ? ` • ${data.candidate.phone}` : '');
+            
+            const profile = data.profile || {};
+            document.getElementById('modal-prev-role').textContent = profile.previous_job_title || 'Professional';
+            document.getElementById('modal-gap-duration').textContent = profile.career_gap_duration || 'Not specified';
+            document.getElementById('modal-experience').textContent = (profile.years_of_experience || '0') + ' Years';
+            document.getElementById('modal-work-mode').textContent = profile.preferred_work_mode || 'Flexible';
+
+            // Skills
+            const skillsDiv = document.getElementById('modal-skills');
+            skillsDiv.innerHTML = '';
+            const skills = (profile.skills || '').split(',').map(s => s.trim()).filter(Boolean);
+            if (skills.length > 0) {
+                skills.forEach(skill => {
+                    const span = document.createElement('span');
+                    span.className = 'px-2.5 py-1 rounded bg-teal-50 text-teal-800 border border-teal-200 text-[11px] font-medium';
+                    span.textContent = skill;
+                    skillsDiv.appendChild(span);
+                });
+            } else {
+                skillsDiv.innerHTML = '<span class="text-slate-400">No skills listed in onboarding.</span>';
+            }
+
+            // Resume
+            const resumeDiv = document.getElementById('modal-resume-text');
+            if (data.resume && data.resume.raw_text) {
+                resumeDiv.textContent = data.resume.raw_text;
+            } else {
+                resumeDiv.textContent = 'No resume uploaded or extractable text found for this candidate.';
+            }
+
+            loading.classList.add('hidden');
+            content.classList.remove('hidden');
+        } else {
+            alert(data.error || 'Failed to load candidate details.');
+            closeCandidateModal();
+        }
+    } catch (e) {
+        console.error(e);
+        alert('Network error loading candidate data.');
+        closeCandidateModal();
+    }
+}
+
+function closeCandidateModal() {
+    document.getElementById('candidate-modal').classList.add('hidden');
+}
+</script>
+{% endblock %}

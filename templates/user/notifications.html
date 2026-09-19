@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}Notifications Inbox — ReTurn{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 border-b border-slate-200 gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                <span>Notifications</span>
+                {% if unread_count > 0 %}
+                <span class="px-2 py-0.5 text-xs font-semibold bg-rose-100 text-rose-700 rounded-full">
+                    {{ unread_count }} New
+                </span>
+                {% endif %}
+            </h1>
+            <p class="text-sm text-slate-500 mt-1">Real-time alerts regarding your applications, vacancy updates, and profile milestones.</p>
+        </div>
+        {% if unread_count > 0 %}
+        <div>
+            <form action="{{ url_for('api_mark_all_notifications_read') }}" method="POST">
+                <button type="submit" class="px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 rounded shadow-sm transition">
+                    Mark All as Read
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Notifications Feed -->
+    <div class="mt-6 space-y-3">
+        {% if notifications and notifications|length > 0 %}
+            {% for n in notifications %}
+            <div class="p-4 rounded-lg border transition-all duration-150 flex items-start justify-between gap-4 {% if not n.is_read %}bg-blue-50/50 border-blue-200 shadow-sm{% else %}bg-white border-slate-200 opacity-90{% endif %}">
+                <div class="flex items-start gap-3">
+                    <div class="mt-1">
+                        {% if not n.is_read %}
+                        <span class="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block ring-4 ring-blue-100" title="Unread"></span>
+                        {% else %}
+                        <span class="w-2.5 h-2.5 rounded-full bg-slate-300 inline-block" title="Read"></span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-sm font-semibold text-slate-900">{{ n.title }}</h3>
+                            <span class="text-[11px] text-slate-400">{{ n.created_at }}</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mt-1 leading-relaxed">{{ n.message }}</p>
+                        {% if n.link %}
+                        <div class="mt-2">
+                            <a href="{{ n.link }}" class="inline-flex items-center text-xs font-semibold text-teal-700 hover:text-teal-800 transition">
+                                View Details &rarr;
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if not n.is_read %}
+                <div>
+                    <form action="{{ url_for('api_mark_notification_read') }}" method="POST">
+                        <input type="hidden" name="notification_id" value="{{ n.id }}">
+                        <button type="submit" class="text-xs font-medium text-slate-400 hover:text-slate-700 transition" title="Mark as read">
+                            Dismiss
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="bg-white rounded-lg border border-slate-200 p-12 text-center">
+                <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                    </svg>
+                </div>
+                <h3 class="text-sm font-semibold text-slate-900">All caught up!</h3>
+                <p class="text-xs text-slate-500 mt-1">You have no new notifications right now. Any updates on your applications or verified listings will appear here.</p>
+                <div class="mt-4">
+                    <a href="{{ url_for('explore_opportunities') }}" class="inline-flex items-center px-3.5 py-1.5 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded transition">
+                        Explore Verified Opportunities
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

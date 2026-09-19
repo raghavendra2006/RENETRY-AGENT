@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}{{ error_title or "Error" }} — ReTurn Platform{% endblock %}
+
+{% block content %}
+<div class="py-16 max-w-lg mx-auto px-4 text-center">
+    <div class="w-16 h-16 rounded-full bg-slate-100 text-slate-500 font-bold text-xl flex items-center justify-center mx-auto mb-4 border border-slate-200">
+        {{ error_code or "!" }}
+    </div>
+    <h1 class="text-2xl font-bold text-slate-900">{{ error_title or "Something Went Wrong" }}</h1>
+    <p class="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
+        {{ error_message or "The page you are looking for might have been moved or is temporarily unavailable." }}
+    </p>
+    <div class="mt-6 flex justify-center gap-3">
+        <a href="{{ url_for('landing') }}" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded transition shadow-sm">
+            Return to Home
+        </a>
+        {% if current_user and current_user.user %}
+        <a href="{{ url_for('user_dashboard') }}" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold text-xs rounded transition shadow-sm">
+            Go to Dashboard
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Startup & Freelance Hub — ReTurn Platform{% endblock %}
+
+{% block content %}
+<div class="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-6">
+        <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+            <a href="{{ url_for('user_dashboard') }}" class="hover:underline">Dashboard</a>
+            <span>&bull;</span>
+            <span class="text-teal-800 font-semibold">Entrepreneurship & Self-Employment</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Startup & Freelance Feasibility Hub</h1>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1 max-w-3xl">
+            For women seeking independence through self-employment, consulting, or starting a business. Enter your idea for a structured feasibility analysis, 4-phase MVP execution roadmap, and verified public credit schemes.
+        </p>
+    </div>
+
+    <!-- Honest Funding Disclaimer Alert -->
+    <div class="p-4 bg-amber-50 border border-amber-200 rounded text-xs text-amber-950 mb-8 space-y-1">
+        <div class="font-bold flex items-center gap-1.5">
+            <span>⚠️</span> Statutory Funding & Scheme Policy
+        </div>
+        <p class="leading-relaxed">
+            <strong>Funding eligibility depends strictly on the specific government scheme, institutional project appraisal, and formal approval by commercial lenders or ministries.</strong> ReTurn does not guarantee loan sanctions, subsidies, or investor funding, and will never request commission or fees for scheme access.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Left: Idea Input Form -->
+        <div class="lg:col-span-6 space-y-6">
+            <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+                <div class="pb-3 border-b border-slate-100 mb-4">
+                    <h2 class="text-base font-bold text-slate-900">Enter Your Business or Freelance Concept</h2>
+                    <p class="text-xs text-slate-500">Structured submission for feasibility assessment.</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('analyze_startup_submission') }}" class="space-y-4">
+                    <div>
+                        <label for="business_name" class="block text-xs font-semibold text-slate-700 mb-1">Proposed Venture or Freelance Brand Name</label>
+                        <input type="text" id="business_name" name="business_name" placeholder="e.g. Artisanal Krafts, CloudBook Analytics, Urban Montessori"
+                            value="{{ last_idea.business_name if last_idea else '' }}"
+                            class="w-full px-3 py-2 text-xs border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900">
+                    </div>
+
+                    <div>
+                        <label for="problem_statement" class="block text-xs font-semibold text-slate-700 mb-1">Problem Being Solved (What pain point exists?)</label>
+                        <textarea id="problem_statement" name="problem_statement" rows="3" required placeholder="Describe what friction or unsolved issue your prospective customers face today..."
+                            class="w-full px-3 py-2 text-xs border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900">{{ last_idea.problem_statement if last_idea else '' }}</textarea>
+                    </div>
+
+                    <div>
+                        <label for="solution_description" class="block text-xs font-semibold text-slate-700 mb-1">Solution / Service Description</label>
+                        <textarea id="solution_description" name="solution_description" rows="3" required placeholder="Explain how your service, product, or freelance consulting resolves this problem..."
+                            class="w-full px-3 py-2 text-xs border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900">{{ last_idea.solution_description if last_idea else '' }}</textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="target_users" class="block text-xs font-semibold text-slate-700 mb-1">Target Users / Clients</label>
+                            <input type="text" id="target_users" name="target_users" required placeholder="e.g. Working parents, local SMEs, software teams"
+                                value="{{ last_idea.target_users if last_idea else '' }}"
+                                class="w-full px-3 py-2 text-xs border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900">
+                        </div>
+                        <div>
+                            <label for="location" class="block text-xs font-semibold text-slate-700 mb-1">Operating Location</label>
+                            <input type="text" id="location" name="location" required placeholder="e.g. Pune, Maharashtra / Remote"
+                                value="{{ last_idea.location if last_idea else (profile.location if profile else '') }}"
+                                class="w-full px-3 py-2 text-xs border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="skills_available" class="block text-xs font-semibold text-slate-700 mb-1">Your Available Skills</label>
+                            <input type="text" id="skills_available" name="skills_available" required placeholder="e.g. Baking, Bookkeeping, Python, Teaching"
+                                value="{{ last_idea.skills_available if last_idea else (profile.skills if profile else '') }}"
+                                class="w-full px-3 py-2 text-xs border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900">
+                        </div>
+                        <div>
+                            <label for="budget_range" class="block text-xs font-semibold text-slate-700 mb-1">Initial Capital / Budget Range</label>
+                            <select id="budget_range" name="budget_range" class="w-full px-3 py-2 text-xs border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900">
+                                <option value="Under INR 50,000 (Micro / Self-funded)">Under INR 50,000 (Micro / Self-funded)</option>
+                                <option value="INR 50,000 - 5 Lakhs (Mudra Shishu/Kishore)">INR 50,000 - 5 Lakhs (Mudra Shishu/Kishore)</option>
+                                <option value="INR 5 Lakhs - 25 Lakhs (Mudra Tarun / MSME)">INR 5 Lakhs - 25 Lakhs (Mudra Tarun / MSME)</option>
+                                <option value="INR 25 Lakhs - 1 Crore (Stand-Up India Greenfield)">INR 25 Lakhs - 1 Crore (Stand-Up India Greenfield)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded transition shadow-sm">
+                        Analyze Concept & Generate Feasibility Report &rarr;
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right: Feasibility Analysis Output & Schemes -->
+        <div class="lg:col-span-6 space-y-6">
+            {% if analysis_result %}
+                <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-6">
+                    <div class="pb-3 border-b border-slate-100 flex justify-between items-center">
+                        <h2 class="text-base font-bold text-slate-900">Feasibility Assessment: {{ analysis_result.business_name }}</h2>
+                        <span class="text-xs font-bold px-2 py-0.5 rounded {% if analysis_result.problem_clarity_level == 'Well-Defined' %}bg-emerald-100 text-emerald-800{% else %}bg-amber-100 text-amber-800{% endif %}">
+                            Clarity: {{ analysis_result.problem_clarity_level }}
+                        </span>
+                    </div>
+
+                    <!-- Problem Clarity Feedback -->
+                    <div class="space-y-1 text-xs">
+                        <span class="font-bold text-slate-700 block">Problem Clarity Evaluation</span>
+                        <p class="text-slate-600 bg-slate-50 p-3 rounded border border-slate-200">{{ analysis_result.problem_clarity_feedback }}</p>
+                    </div>
+
+                    <!-- Target Audience Feedback -->
+                    <div class="space-y-1 text-xs">
+                        <span class="font-bold text-slate-700 block">Target Audience Specificity</span>
+                        <p class="text-slate-600 bg-slate-50 p-3 rounded border border-slate-200">{{ analysis_result.target_audience_feedback }}</p>
+                    </div>
+
+                    <!-- Suggested Business Models -->
+                    <div class="space-y-2 text-xs">
+                        <span class="font-bold text-slate-700 block">Viable Business & Revenue Models</span>
+                        <div class="space-y-2">
+                            {% for m in analysis_result.suggested_models %}
+                                <div class="p-3 bg-slate-50 border border-slate-200 rounded">
+                                    <div class="font-bold text-slate-900">{{ m.model }}</div>
+                                    <div class="text-slate-600 mt-0.5">{{ m.rationale }}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- 4-Phase MVP Execution Roadmap -->
+                    <div class="space-y-2 text-xs">
+                        <span class="font-bold text-slate-700 block">4-Phase Minimum Viable Product (MVP) Plan</span>
+                        <div class="space-y-2">
+                            {% for step in analysis_result.mvp_steps %}
+                                <div class="p-3 bg-slate-50 border border-slate-200 rounded">
+                                    <div class="font-bold text-teal-800">{{ step.phase }}</div>
+                                    <div class="text-slate-600 mt-0.5">{{ step.action }}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Verified Public Schemes -->
+                    <div class="space-y-2 text-xs pt-2 border-t border-slate-100">
+                        <span class="font-bold text-slate-900 block">Applicable Verified Public Schemes</span>
+                        <div class="space-y-2">
+                            {% for sch in analysis_result.verified_schemes %}
+                                <div class="p-3 bg-blue-50/40 border border-blue-100 rounded">
+                                    <div class="flex justify-between items-start">
+                                        <div class="font-bold text-blue-900">{{ sch.name }}</div>
+                                        <a href="{{ sch.official_url }}" target="_blank" rel="noopener" class="text-[11px] text-blue-700 font-semibold hover:underline">Official Portal &rarr;</a>
+                                    </div>
+                                    <div class="text-slate-600 mt-1">{{ sch.details }}</div>
+                                    <div class="text-[10px] text-slate-500 mt-1">Sponsor: {{ sch.sponsor }}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Freelance Launch Plan -->
+                        <div class="space-y-3 pt-2 border-t border-slate-100">
+                            <div>
+                                <span class="font-bold text-slate-900 block">Freelance Launch Plan</span>
+                                <p class="text-[11px] text-slate-500 mt-1">A practical path from your verified skills to your first paid engagement.</p>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                {% for step in analysis_result.freelance_launch_plan %}
+                                    <div class="p-3 bg-teal-50/50 border border-teal-100 rounded">
+                                        <div class="font-bold text-teal-900">{{ loop.index }}. {{ step.step }}</div>
+                                        <div class="text-slate-600 mt-1">{{ step.action }}</div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="p-3 bg-slate-50 border border-slate-200 rounded text-xs">
+                                <div class="font-bold text-slate-800 mb-2">Freelance safeguards and next actions</div>
+                                <ul class="space-y-1.5 text-slate-600 list-disc pl-4">
+                                    {% for advice in analysis_result.freelance_advice %}
+                                        <li>{{ advice }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <!-- Empty State -->
+                <div class="bg-white p-12 rounded-lg border border-slate-200 text-center space-y-3">
+                    <div class="text-2xl font-bold text-slate-400">💡</div>
+                    <h3 class="text-base font-bold text-slate-900">No Idea Submitted Yet</h3>
+                    <p class="text-xs text-slate-500 max-w-sm mx-auto">
+                        Fill out the form on the left with your concept details to receive a step-by-step MVP plan, customer discovery guidance, and verified scheme matches.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

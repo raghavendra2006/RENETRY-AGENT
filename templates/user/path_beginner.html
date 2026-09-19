@@ -1,0 +1,316 @@
+{% extends "base.html" %}
+
+{% block title %}Pathway 2: No Previous Experience — ReTurn Platform{% endblock %}
+
+{% block content %}
+<div class="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Breadcrumb & Header -->
+    <div class="mb-6">
+        <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+            <a href="{{ url_for('user_dashboard') }}" class="hover:underline">Dashboard</a>
+            <span>&bull;</span>
+            <span class="text-teal-800 font-semibold">Pathway 2: First-Time Workforce Entry</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">First-Time Workforce Entry Pathway</h1>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1 max-w-3xl">
+            We will first understand what you need right now, then give you a focused next step. You can build a resume, plan higher studies, or start a practical career roadmap without having to figure everything out at once.
+        </p>
+    </div>
+
+    <!-- Guided decision flow -->
+    <div id="beginner-guided-flow" class="bg-slate-900 text-white p-6 sm:p-8 rounded-lg shadow-sm mb-8">
+        <div class="max-w-3xl">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-300 mb-2">Start with your current need</div>
+            <h2 class="text-xl sm:text-2xl font-bold">Let’s choose the right next step for you</h2>
+            <p class="text-sm text-slate-300 mt-2">There is no wrong answer. Your choice only changes the guidance shown below.</p>
+
+            <div id="resume-question" class="mt-6">
+                <p class="text-sm font-semibold mb-3">Do you already have a resume?</p>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button type="button" data-resume-choice="yes" class="px-4 py-2.5 rounded bg-white text-slate-900 text-xs font-bold hover:bg-slate-100">Yes, I have a resume</button>
+                    <button type="button" data-resume-choice="no" class="px-4 py-2.5 rounded border border-slate-500 text-white text-xs font-bold hover:bg-slate-800">No, help me create one</button>
+                </div>
+            </div>
+
+            <div id="resume-follow-up" class="hidden mt-6 pt-5 border-t border-slate-700">
+                <div id="resume-yes-message" class="hidden">
+                    <p class="text-sm font-semibold">Good. Keep it ready while we plan your next step.</p>
+                    <a href="{{ url_for('resume_hub') }}" class="inline-block mt-2 text-xs font-semibold text-emerald-300 hover:underline">Review or improve your resume in Resume Hub &rarr;</a>
+                </div>
+                <div id="resume-no-message" class="hidden">
+                    <p class="text-sm font-semibold">That’s okay. We’ll help you create an honest, entry-level resume after this quick choice.</p>
+                </div>
+                <p class="text-sm font-semibold mt-5 mb-3">Are you interested in higher studies?</p>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button type="button" data-study-choice="yes" class="px-4 py-2.5 rounded bg-emerald-400 text-slate-950 text-xs font-bold hover:bg-emerald-300">Yes, help me choose studies</button>
+                    <button type="button" data-study-choice="no" class="px-4 py-2.5 rounded border border-slate-500 text-white text-xs font-bold hover:bg-slate-800">No, show me career options</button>
+                </div>
+            </div>
+
+            <div id="study-guidance" class="hidden mt-6 pt-5 border-t border-slate-700">
+                <h3 class="font-bold text-sm">Your higher-studies planning checklist</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3 text-xs">
+                    <div class="p-3 rounded bg-slate-800 border border-slate-700"><strong class="text-emerald-300">1. Choose a course</strong><p class="text-slate-300 mt-1">Compare subjects, duration, eligibility, mode, and career outcomes.</p><a href="{{ url_for('learning_catalog') }}" class="text-emerald-300 font-semibold inline-block mt-2 hover:underline">Explore courses &rarr;</a></div>
+                    <div class="p-3 rounded bg-slate-800 border border-slate-700"><strong class="text-emerald-300">2. Shortlist colleges</strong><p class="text-slate-300 mt-1">Check recognised colleges, location, fees, placement support, and deadlines.</p><a href="{{ url_for('learning_catalog') }}" class="text-emerald-300 font-semibold inline-block mt-2 hover:underline">Compare learning options &rarr;</a></div>
+                    <div class="p-3 rounded bg-slate-800 border border-slate-700"><strong class="text-emerald-300">3. Find scholarships</strong><p class="text-slate-300 mt-1">Review eligibility and application dates before committing to a course.</p><a href="{{ url_for('government_hub') }}" class="text-emerald-300 font-semibold inline-block mt-2 hover:underline">Check government support &rarr;</a></div>
+                </div>
+            </div>
+
+            <div id="career-guidance" class="hidden mt-6 pt-5 border-t border-slate-700">
+                <h3 class="font-bold text-sm">Your career-start plan</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3 text-xs">
+                    <div class="p-3 rounded bg-slate-800 border border-slate-700"><strong class="text-emerald-300">Career options</strong><p class="text-slate-300 mt-1">Explore operations, customer support, data, content, and apprenticeship roles.</p><a href="{{ url_for('explore_opportunities') }}" class="text-emerald-300 font-semibold inline-block mt-2 hover:underline">Explore opportunities &rarr;</a></div>
+                    <div class="p-3 rounded bg-slate-800 border border-slate-700"><strong class="text-emerald-300">Roadmap</strong><p class="text-slate-300 mt-1">Build one core skill, practise it, complete a project, and apply consistently.</p><a href="{{ url_for('user_roadmap') }}" class="text-emerald-300 font-semibold inline-block mt-2 hover:underline">Open my roadmap &rarr;</a></div>
+                    <div class="p-3 rounded bg-slate-800 border border-slate-700"><strong class="text-emerald-300">Action plan</strong><p class="text-slate-300 mt-1">Set a weekly learning target, finish one proof-of-work project, and submit five targeted applications.</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7-Stage Beginner Progression Map -->
+    <div id="beginner-roadmap-overview" class="hidden bg-white p-6 rounded-lg border border-slate-200 shadow-sm mb-8">
+        <h2 class="text-sm font-bold uppercase tracking-wider text-slate-500 mb-4">Structured Beginner Progression</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 text-center text-xs">
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200">
+                <div class="font-bold text-teal-800">1. Interest</div>
+                <div class="text-[10px] text-slate-500 mt-0.5">Explore domains</div>
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200">
+                <div class="font-bold text-teal-800">2. Skill Choice</div>
+                <div class="text-[10px] text-slate-500 mt-0.5">Pick 1 core tool</div>
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200">
+                <div class="font-bold text-teal-800">3. Learning</div>
+                <div class="text-[10px] text-slate-500 mt-0.5">Free SWAYAM course</div>
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200">
+                <div class="font-bold text-teal-800">4. Practice</div>
+                <div class="text-[10px] text-slate-500 mt-0.5">Hands-on exercises</div>
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200">
+                <div class="font-bold text-teal-800">5. Project</div>
+                <div class="text-[10px] text-slate-500 mt-0.5">Tangible deliverable</div>
+            </div>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200">
+                <div class="font-bold text-teal-800">6. First Resume</div>
+                <div class="text-[10px] text-slate-500 mt-0.5">No fake jobs</div>
+            </div>
+            <div class="p-2.5 bg-slate-900 text-white rounded shadow-sm">
+                <div class="font-bold text-emerald-400">7. Opportunities</div>
+                <div class="text-[10px] text-slate-300 mt-0.5">Entry & fellowship</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="beginner-content" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Left: First Professional Resume Builder (Honest & Authentic) -->
+        <div class="lg:col-span-7 space-y-6">
+            <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+                <div class="pb-4 border-b border-slate-100 mb-4">
+                    <div class="inline-block px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider bg-teal-100 text-teal-800 mb-1">
+                        First-Time Resume Builder
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900">Construct an Authentic First Resume</h3>
+                    <p class="text-xs text-slate-600 mt-1">
+                        Never invent fake companies or imaginary internships. Recruiters respect structured education, academic projects, volunteer organizing, and proven software competence.
+                    </p>
+                </div>
+
+                <form id="first-resume-form" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Target Entry Role</label>
+                        <select id="entry-role" class="w-full px-3 py-2 text-xs border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900">
+                            <option value="Junior Operations / Administrative Associate">Junior Operations / Administrative Associate</option>
+                            <option value="Customer Support & Community Specialist">Customer Support & Community Specialist</option>
+                            <option value="Junior Data Associate / Spreadsheet Specialist">Junior Data Associate / Spreadsheet Specialist</option>
+                            <option value="Entry-Level Web Content & Documentation Assistant">Entry-Level Web Content & Documentation Assistant</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Core Software & Tools You Can Use Today</label>
+                        <input type="text" id="entry-skills" placeholder="e.g. MS Excel, Google Docs, Typing, Email Communication, Basic SQL" value="{{ profile.skills if profile and profile.skills else 'MS Excel, Google Docs, Email Management, Written Communication' }}" class="w-full px-3 py-2 text-xs border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Academic Projects or Real-World Activities (Genuine Only)</label>
+                        <textarea id="entry-projects" rows="3" placeholder="e.g. Coordinated college event logistics for 200 participants; completed self-directed Excel budget analysis model; volunteered for local literacy campaign." class="w-full px-3 py-2 text-xs border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Completed Coursework / Certifications</label>
+                        <input type="text" id="entry-courses" placeholder="e.g. SWAYAM Office Automation Course, FreeCodeCamp Responsive Web Design" class="w-full px-3 py-2 text-xs border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900">
+                    </div>
+
+                    <button type="button" id="generate-first-resume-btn" class="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded transition shadow-sm">
+                        Generate Formatted First Resume &rarr;
+                    </button>
+                </form>
+
+                <!-- Generated Output Preview -->
+                <div id="first-resume-preview-box" class="mt-6 pt-4 border-t border-slate-200 hidden">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-bold text-slate-800">Generated Authentic Resume Preview</span>
+                        <button type="button" id="copy-first-resume-btn" class="text-xs font-semibold text-teal-700 hover:underline">Copy Formatted Text</button>
+                    </div>
+                    <textarea id="first-resume-output" rows="12" class="w-full p-3 font-mono text-xs bg-slate-50 border border-slate-300 rounded text-slate-800" readonly></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Beginner Resources & Entry Opportunities -->
+        <div class="lg:col-span-5 space-y-6">
+            <!-- Recommended Beginner Courses -->
+            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <h3 class="font-bold text-sm text-slate-900">Verified Free Foundational Courses</h3>
+                    <a href="{{ url_for('learning_catalog') }}" class="text-xs text-teal-700 hover:underline">Catalog</a>
+                </div>
+
+                <div class="mt-3 space-y-2 text-xs">
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded">
+                        <div class="font-bold text-slate-900">Office Automation & Digital Literacy</div>
+                        <div class="text-slate-500 mt-0.5">SWAYAM / UGC &bull; 6 Weeks &bull; Free</div>
+                        <p class="text-slate-600 mt-1">Foundational spreadsheets, data entry standards, and document drafting.</p>
+                        <a href="https://swayam.gov.in" target="_blank" rel="noopener" class="text-teal-700 font-semibold hover:underline mt-1 inline-block">Official SWAYAM Portal &rarr;</a>
+                    </div>
+
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded">
+                        <div class="font-bold text-slate-900">Workplace Communication & Etiquette</div>
+                        <div class="text-slate-500 mt-0.5">Skill India Digital / NSDC &bull; Free</div>
+                        <p class="text-slate-600 mt-1">Professional email correspondence, team participation, and interview presence.</p>
+                        <a href="https://www.skillindiadigital.gov.in" target="_blank" rel="noopener" class="text-teal-700 font-semibold hover:underline mt-1 inline-block">Skill India Portal &rarr;</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Entry-Level Opportunities & Fellowships -->
+            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <h3 class="font-bold text-sm text-slate-900">Entry-Level Openings</h3>
+                    <a href="{{ url_for('explore_opportunities') }}" class="text-xs text-teal-700 hover:underline">All Jobs</a>
+                </div>
+
+                <div class="mt-3 space-y-3 text-xs">
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded">
+                        <span class="badge-external-source mb-1.5">Public Fellowship</span>
+                        <div class="font-bold text-slate-900">Open Source Contributor & Outreachy Fellow</div>
+                        <div class="text-slate-500">Python Software Foundation / Outreachy &bull; Remote</div>
+                        <p class="text-slate-600 mt-1">Requires commitment to learn, no prior formal work history mandatory.</p>
+                        <a href="{{ url_for('explore_opportunities') }}" class="text-teal-700 font-semibold hover:underline mt-1 inline-block">View Details &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const resumeFollowUp = document.getElementById('resume-follow-up');
+    const resumeYesMessage = document.getElementById('resume-yes-message');
+    const resumeNoMessage = document.getElementById('resume-no-message');
+    const beginnerContent = document.getElementById('beginner-content');
+    const roadmapOverview = document.getElementById('beginner-roadmap-overview');
+    const studyGuidance = document.getElementById('study-guidance');
+    const careerGuidance = document.getElementById('career-guidance');
+
+    document.querySelectorAll('[data-resume-choice]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const hasResume = button.dataset.resumeChoice === 'yes';
+            resumeFollowUp.classList.remove('hidden');
+            resumeYesMessage.classList.toggle('hidden', !hasResume);
+            resumeNoMessage.classList.toggle('hidden', hasResume);
+            beginnerContent.classList.toggle('hidden', hasResume);
+            roadmapOverview.classList.remove('hidden');
+            document.querySelectorAll('[data-resume-choice]').forEach((choice) => {
+                choice.classList.toggle('ring-2', choice === button);
+                choice.classList.toggle('ring-emerald-300', choice === button);
+            });
+        });
+    });
+
+    document.querySelectorAll('[data-study-choice]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const wantsStudy = button.dataset.studyChoice === 'yes';
+            studyGuidance.classList.toggle('hidden', !wantsStudy);
+            careerGuidance.classList.toggle('hidden', wantsStudy);
+            if (!wantsStudy) {
+                roadmapOverview.classList.remove('hidden');
+            }
+            document.querySelectorAll('[data-study-choice]').forEach((choice) => {
+                choice.classList.toggle('ring-2', choice === button);
+                choice.classList.toggle('ring-emerald-300', choice === button);
+            });
+        });
+    });
+
+    const generateBtn = document.getElementById('generate-first-resume-btn');
+    const previewBox = document.getElementById('first-resume-preview-box');
+    const outputTextarea = document.getElementById('first-resume-output');
+    const copyBtn = document.getElementById('copy-first-resume-btn');
+
+    if (generateBtn) {
+        generateBtn.addEventListener('click', () => {
+            const role = document.getElementById('entry-role').value;
+            const skills = document.getElementById('entry-skills').value;
+            const projects = document.getElementById('entry-projects').value || 'Completed practical academic assignments and organized local community events.';
+            const courses = document.getElementById('entry-courses').value || 'Self-study coursework in Office Automation & Business Communication.';
+
+            const draft = `==================================================
+FIRST PROFESSIONAL RESUME (ENTRY-LEVEL / CAREER FOUNDATION)
+==================================================
+
+{{ user.full_name }}
+Location: {{ profile.location if profile and profile.location else '[City, State]' }}
+Email: {{ user.email }} | Phone: [Phone Number]
+Target Direction: ${role}
+
+--------------------------------------------------
+OBJECTIVE & CANDIDATE STATEMENT
+--------------------------------------------------
+Diligent and proactive candidate seeking an entry-level position as a ${role}. Committed to continuous learning, collaborative execution, and reliable workplace communication. Bringing rigorous foundational education and proven skills in ${skills}.
+
+--------------------------------------------------
+CORE TECHNICAL & OFFICE SKILLS
+--------------------------------------------------
+• Functional Competencies: ${skills}
+• Professional Skills: Problem Solving, Detail-Oriented Execution, Fast Learner, Reliable Follow-Through
+
+--------------------------------------------------
+PROJECTS & RELEVANT DELIVERABLES
+--------------------------------------------------
+• Practical Coursework & Initiatives:
+  - ${projects}
+  - Applied structured workflows, meeting quality milestones and task requirements.
+
+--------------------------------------------------
+EDUCATION & ACADEMIC CREDENTIALS
+--------------------------------------------------
+• {{ profile.qualification if profile and profile.qualification else "Bachelor's Degree" }}
+  {{ profile.education if profile and profile.education else 'University / College' }} | Graduated {{ profile.graduation_year if profile and profile.graduation_year else '2024' }}
+
+--------------------------------------------------
+CONTINUOUS LEARNING & CERTIFICATIONS
+--------------------------------------------------
+• ${courses}
+`;
+            outputTextarea.value = draft;
+            previewBox.classList.remove('hidden');
+        });
+    }
+
+    if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+            outputTextarea.select();
+            navigator.clipboard.writeText(outputTextarea.value).then(() => {
+                copyBtn.textContent = '✓ Copied!';
+                setTimeout(() => copyBtn.textContent = 'Copy Formatted Text', 2000);
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

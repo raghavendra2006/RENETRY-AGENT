@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+
+{% block title %}Complete Your Profile — ReTurn Platform{% endblock %}
+
+{% block content %}
+<div class="py-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-8">
+        <div class="flex items-center gap-2 text-xs font-semibold text-teal-800 uppercase tracking-wider mb-1">
+            <span>Step 1 of 2</span>
+            <span>&bull;</span>
+            <span>Profile Configuration</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Complete Your Re-Entry Profile</h1>
+        <p class="text-sm text-slate-600 mt-1">
+            We collect only the information necessary to identify suitable pathways, identify skill requirements, and tailor your roadmap. Sensitive data is not requested.
+        </p>
+    </div>
+
+    <form method="POST" action="{{ url_for('complete_profile') }}" class="space-y-8">
+        <!-- Section 1: Basic Details -->
+        <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
+            <h2 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-2">1. Basic Background & Location</h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="location" class="block text-xs font-semibold text-slate-700 mb-1">Current City & State</label>
+                    <input type="text" id="location" name="location" required placeholder="e.g. Pune, Maharashtra"
+                        value="{{ profile.location if profile and profile.location else '' }}"
+                        class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900">
+                </div>
+                <div>
+                    <label for="preferred_work_location" class="block text-xs font-semibold text-slate-700 mb-1">Preferred Work Location(s)</label>
+                    <input type="text" id="preferred_work_location" name="preferred_work_location" placeholder="e.g. Pune, Mumbai, or Remote"
+                        value="{{ profile.preferred_work_location if profile and profile.preferred_work_location else '' }}"
+                        class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label for="education" class="block text-xs font-semibold text-slate-700 mb-1">Highest Degree Level</label>
+                    <select id="education" name="education" class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900">
+                        <option value="Bachelor's Degree" {% if profile and profile.education == "Bachelor's Degree" %}selected{% endif %}>Bachelor's Degree</option>
+                        <option value="Master's Degree" {% if profile and profile.education == "Master's Degree" %}selected{% endif %}>Master's Degree</option>
+                        <option value="Diploma / Polytechnic" {% if profile and profile.education == "Diploma / Polytechnic" %}selected{% endif %}>Diploma / Polytechnic</option>
+                        <option value="Doctorate (Ph.D.)" {% if profile and profile.education == "Doctorate (Ph.D.)" %}selected{% endif %}>Doctorate (Ph.D.)</option>
+                        <option value="Higher Secondary (12th)" {% if profile and profile.education == "Higher Secondary (12th)" %}selected{% endif %}>Higher Secondary (12th)</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="qualification" class="block text-xs font-semibold text-slate-700 mb-1">Degree / Specialization</label>
+                    <input type="text" id="qualification" name="qualification" required placeholder="e.g. B.Tech Computer Science, B.Com, BA English"
+                        value="{{ profile.qualification if profile and profile.qualification else '' }}"
+                        class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900">
+                </div>
+                <div>
+                    <label for="graduation_year" class="block text-xs font-semibold text-slate-700 mb-1">Graduation Year</label>
+                    <input type="number" id="graduation_year" name="graduation_year" min="1980" max="2026" placeholder="e.g. 2018"
+                        value="{{ profile.graduation_year if profile and profile.graduation_year else '' }}"
+                        class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900">
+                </div>
+            </div>
+
+            <div>
+                <label for="work_mode_preference" class="block text-xs font-semibold text-slate-700 mb-1">Work Mode Preference</label>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                    <label class="flex items-center gap-2 p-2 border border-slate-200 rounded cursor-pointer hover:bg-slate-50">
+                        <input type="radio" name="work_mode_preference" value="Remote" {% if not profile or profile.work_mode_preference == 'Remote' %}checked{% endif %}>
+                        <span>Remote Only</span>
+                    </label>
+                    <label class="flex items-center gap-2 p-2 border border-slate-200 rounded cursor-pointer hover:bg-slate-50">
+                        <input type="radio" name="work_mode_preference" value="Hybrid" {% if profile and profile.work_mode_preference == 'Hybrid' %}checked{% endif %}>
+                        <span>Hybrid (Office + Remote)</span>
+                    </label>
+                    <label class="flex items-center gap-2 p-2 border border-slate-200 rounded cursor-pointer hover:bg-slate-50">
+                        <input type="radio" name="work_mode_preference" value="On-site" {% if profile and profile.work_mode_preference == 'On-site' %}checked{% endif %}>
+                        <span>On-site / Office</span>
+                    </label>
+                    <label class="flex items-center gap-2 p-2 border border-slate-200 rounded cursor-pointer hover:bg-slate-50">
+                        <input type="radio" name="work_mode_preference" value="Flexible / Any" {% if profile and profile.work_mode_preference == 'Flexible / Any' %}checked{% endif %}>
+                        <span>Flexible / Open</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Career & Gap Context -->
+        <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
+            <h2 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-2">2. Career History & Pause Context</h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="previous_job_title" class="block text-xs font-semibold text-slate-700 mb-1">Previous Job / Role (If Any)</label>
+                    <input type="text" id="previous_job_title" name="previous_job_title" placeholder="e.g. Software Developer, Secondary Teacher, Operations Exec"
+                        value="{{ profile.previous_job_title if profile and profile.previous_job_title else '' }}"
+                        class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900">
+                    <p class="text-[11px] text-slate-400 mt-0.5">Leave blank or enter 'None' if entering the workforce for the first time.</p>
+                </div>
+                <div>
+                    <label for="years_of_experience" class="block text-xs font-semibold text-slate-700 mb-1">Total Prior Experience (Years)</label>
+                    <input type="number" step="0.5" id="years_of_experience" name="years_of_experience" min="0" max="40" placeholder="e.g. 3.5"
+                        value="{{ profile.years_of_experience if profile and profile.years_of_experience is not none else '0' }}"
+                        class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="career_gap_duration" class="block text-xs font-semibold text-slate-700 mb-1">Career Pause Duration</label>
+                    <select id="career_gap_duration" name="career_gap_duration" class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900">
+                        <option value="" disabled {% if not profile or not profile.career_gap_duration %}selected{% endif %}>Select duration...</option>
+                        <option value="No Prior Employment (Fresh)" {% if profile and profile.career_gap_duration == 'No Prior Employment (Fresh)' %}selected{% endif %}>No Prior Employment (Entering Fresh)</option>
+                        <option value="Under 1 year" {% if profile and profile.career_gap_duration == 'Under 1 year' %}selected{% endif %}>Under 1 year</option>
+                        <option value="1 - 2 years" {% if profile and profile.career_gap_duration == '1 - 2 years' %}selected{% endif %}>1 - 2 years</option>
+                        <option value="3 - 5 years" {% if profile and profile.career_gap_duration == '3 - 5 years' %}selected{% endif %}>3 - 5 years</option>
+                        <option value="5 - 8 years" {% if profile and profile.career_gap_duration == '5 - 8 years' %}selected{% endif %}>5 - 8 years</option>
+                        <option value="8+ years" {% if profile and profile.career_gap_duration == '8+ years' %}selected{% endif %}>8+ years</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="gap_reason" class="block text-xs font-semibold text-slate-700 mb-1">Reason for Career Pause <span class="text-slate-400 font-normal">(Optional & Handled Respectfully)</span></label>
+                    <select id="gap_reason" name="gap_reason" class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900">
+                        <option value="" disabled {% if not profile or not profile.gap_reason %}selected{% endif %}>Select reason (optional)...</option>
+                        <option value="Maternity & Childcare" {% if profile and profile.gap_reason == 'Maternity & Childcare' %}selected{% endif %}>Maternity & Childcare</option>
+                        <option value="Eldercare / Family Responsibilities" {% if profile and profile.gap_reason == 'Eldercare / Family Responsibilities' %}selected{% endif %}>Eldercare / Family Responsibilities</option>
+                        <option value="Personal Health & Medical Recovery" {% if profile and profile.gap_reason == 'Personal Health & Medical Recovery' %}selected{% endif %}>Personal Health & Medical Recovery</option>
+                        <option value="Relocation / Spouse Transfer" {% if profile and profile.gap_reason == 'Relocation / Spouse Transfer' %}selected{% endif %}>Relocation / Spouse Transfer</option>
+                        <option value="Education / Voluntary Sabbatical" {% if profile and profile.gap_reason == 'Education / Voluntary Sabbatical' %}selected{% endif %}>Education / Voluntary Sabbatical</option>
+                        <option value="Other / Prefer not to specify" {% if profile and profile.gap_reason == 'Other / Prefer not to specify' %}selected{% endif %}>Other / Prefer not to specify</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label for="previous_industry" class="block text-xs font-semibold text-slate-700 mb-1">Previous Industry / Sector</label>
+                <input type="text" id="previous_industry" name="previous_industry" placeholder="e.g. Information Technology, Education, Financial Services, Retail"
+                    value="{{ profile.previous_industry if profile and profile.previous_industry else '' }}"
+                    class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900">
+            </div>
+        </div>
+
+        <!-- Section 3: Skills & Direction -->
+        <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
+            <h2 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-2">3. Skills & Career Direction</h2>
+
+            <div>
+                <label for="skills" class="block text-xs font-semibold text-slate-700 mb-1">Existing Skills & Tools (Comma-separated)</label>
+                <input type="text" id="skills" name="skills" required placeholder="e.g. Python, SQL, Excel, Customer Support, Teaching, Project Planning"
+                    value="{{ profile.skills if profile and profile.skills else '' }}"
+                    class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900">
+                <p class="text-[11px] text-slate-400 mt-0.5">Include technical software, business tools, and organizational strengths.</p>
+            </div>
+
+            <div>
+                <label for="desired_career_direction" class="block text-xs font-semibold text-slate-700 mb-1">Desired Role or Target Direction</label>
+                <input type="text" id="desired_career_direction" name="desired_career_direction" required placeholder="e.g. Backend Software Engineer, Data Operations, Administrative Officer, Independent Consultant"
+                    value="{{ profile.desired_career_direction if profile and profile.desired_career_direction else '' }}"
+                    class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Sector Preferences (Choose primary interest)</label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                    <label class="flex items-center gap-2 p-3 border border-slate-200 rounded cursor-pointer hover:bg-slate-50">
+                        <input type="radio" name="preferences_sector" value="Private" {% if not profile or profile.preferences_sector == 'Private' %}checked{% endif %}>
+                        <div>
+                            <div class="font-bold text-slate-900">Private Sector</div>
+                            <div class="text-[11px] text-slate-500">Corporate returnships & roles</div>
+                        </div>
+                    </label>
+                    <label class="flex items-center gap-2 p-3 border border-slate-200 rounded cursor-pointer hover:bg-slate-50">
+                        <input type="radio" name="preferences_sector" value="Government" {% if profile and profile.preferences_sector == 'Government' %}checked{% endif %}>
+                        <div>
+                            <div class="font-bold text-slate-900">Government</div>
+                            <div class="text-[11px] text-slate-500">Public sector & relaxed quotas</div>
+                        </div>
+                    </label>
+                    <label class="flex items-center gap-2 p-3 border border-slate-200 rounded cursor-pointer hover:bg-slate-50">
+                        <input type="radio" name="preferences_sector" value="Startup/Freelance" {% if profile and profile.preferences_sector == 'Startup/Freelance' %}checked{% endif %}>
+                        <div>
+                            <div class="font-bold text-slate-900">Startup / Freelance</div>
+                            <div class="text-[11px] text-slate-500">Self-employment & micro-business</div>
+                        </div>
+                    </label>
+                    <label class="flex items-center gap-2 p-3 border border-slate-200 rounded cursor-pointer hover:bg-slate-50">
+                        <input type="radio" name="preferences_sector" value="Education/Reskilling" {% if profile and profile.preferences_sector == 'Education/Reskilling' %}checked{% endif %}>
+                        <div>
+                            <div class="font-bold text-slate-900">Reskilling First</div>
+                            <div class="text-[11px] text-slate-500">Dedicated learning phase</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Career Goals & Learning Preferences -->
+        <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
+            <h2 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-2">4. Career Goals & Learning Preferences</h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="target_role" class="block text-xs font-semibold text-slate-700 mb-1">Target Job Title / Role</label>
+                    <input type="text" id="target_role" name="target_role" placeholder="e.g. Senior Data Analyst, UX Designer, Administrative Officer"
+                        value="{{ profile.target_role if profile and profile.target_role else '' }}"
+                        class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900">
+                    <p class="text-[11px] text-slate-400 mt-0.5">Specific role you are targeting for AI-powered roadmap generation.</p>
+                </div>
+                <div>
+                    <label for="learning_preference" class="block text-xs font-semibold text-slate-700 mb-1">Learning Style Preference</label>
+                    <select id="learning_preference" name="learning_preference" class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900">
+                        <option value="Self-paced" {% if profile and profile.learning_preference == 'Self-paced' %}selected{% endif %}>Self-paced (Online courses, tutorials)</option>
+                        <option value="Instructor-led" {% if profile and profile.learning_preference == 'Instructor-led' %}selected{% endif %}>Instructor-led (Live classes, bootcamps)</option>
+                        <option value="Mixed" {% if profile and profile.learning_preference == 'Mixed' %}selected{% endif %}>Mixed (Combination of both)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="cost_preference" class="block text-xs font-semibold text-slate-700 mb-1">Budget for Learning</label>
+                    <select id="cost_preference" name="cost_preference" class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900">
+                        <option value="Free Only" {% if not profile or (profile and profile.cost_preference == 'Free Only') %}selected{% endif %}>Free Resources Only</option>
+                        <option value="Free + Paid" {% if profile and profile.cost_preference == 'Free + Paid' %}selected{% endif %}>Free + Affordable Paid Courses</option>
+                        <option value="Paid Preferred" {% if profile and profile.cost_preference == 'Paid Preferred' %}selected{% endif %}>Paid Courses (Budget Available)</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="career_goal" class="block text-xs font-semibold text-slate-700 mb-1">Primary Career Goal</label>
+                    <input type="text" id="career_goal" name="career_goal" placeholder="e.g. Secure a remote role within 3 months, launch a freelance consulting practice"
+                        value="{{ profile.career_goal if profile and profile.career_goal else '' }}"
+                        class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900">
+                    <p class="text-[11px] text-slate-400 mt-0.5">Helps our AI generate relevant recommendations.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-4">
+            <a href="{{ url_for('user_dashboard') }}" class="text-xs text-slate-500 hover:text-slate-800">Cancel / Return to Dashboard</a>
+            <button type="submit" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm rounded shadow-sm transition">
+                Save Profile & Choose Career Path &rarr;
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

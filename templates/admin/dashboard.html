@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Operations Console — ReTurn Platform{% endblock %}
+
+{% block content %}
+<div class="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-slate-200 gap-4 mb-6">
+        <div>
+            <div class="text-xs font-semibold text-emerald-700 uppercase tracking-wider mb-1">
+                Platform Operations & Integrity Control
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">
+                Administrative Dashboard
+            </h1>
+            <p class="text-xs text-slate-500 mt-1">
+                All analytics are calculated in real-time from the database. No fabricated counters.
+            </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+            <a href="{{ url_for('admin_verify_recruiters') }}" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs rounded transition shadow-sm">
+                Recruiter Queue ({{ pending_recruiters_count }})
+            </a>
+            <a href="{{ url_for('admin_manage_jobs') }}" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded transition shadow-sm">
+                Moderate Jobs
+            </a>
+        </div>
+    </div>
+
+    <!-- Real Database Analytics Metric Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+            <div class="text-xs font-semibold text-slate-500 mb-1">Total Registered Users</div>
+            <div class="text-2xl font-bold text-slate-900">{{ metrics.total_users }}</div>
+            <div class="text-[11px] text-teal-700 mt-1">
+                <a href="{{ url_for('admin_manage_users') }}" class="hover:underline">View User Registry &rarr;</a>
+            </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+            <div class="text-xs font-semibold text-slate-500 mb-1">Pending Recruiter Verifications</div>
+            <div class="text-2xl font-bold {% if pending_recruiters_count > 0 %}text-amber-600{% else %}text-slate-900{% endif %}">
+                {{ pending_recruiters_count }}
+            </div>
+            <div class="text-[11px] text-teal-700 mt-1">
+                <a href="{{ url_for('admin_verify_recruiters') }}" class="hover:underline">Review Verification Queue &rarr;</a>
+            </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+            <div class="text-xs font-semibold text-slate-500 mb-1">Active Job Listings</div>
+            <div class="text-2xl font-bold text-slate-900">{{ metrics.active_jobs }}</div>
+            <div class="text-[11px] text-slate-400 mt-1">{{ metrics.total_jobs }} total posted</div>
+        </div>
+
+        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+            <div class="text-xs font-semibold text-slate-500 mb-1">Verified Public Schemes</div>
+            <div class="text-2xl font-bold text-slate-900">{{ metrics.total_gov_opps }}</div>
+            <div class="text-[11px] text-blue-700 mt-1">
+                <a href="{{ url_for('admin_manage_government') }}" class="hover:underline">Manage Schemes &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Operational Controls Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Left: Pathway Distribution & Quick Admin Links -->
+        <div class="lg:col-span-6 space-y-6">
+            <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+                <h2 class="font-bold text-base text-slate-900 mb-4 pb-2 border-b border-slate-100">User Pathway Distribution (Live DB)</h2>
+                <div class="space-y-3 text-xs">
+                    <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded border border-slate-200">
+                        <span class="font-semibold text-slate-800">Experienced + Career Gap</span>
+                        <span class="font-bold text-slate-900">{{ pathway_counts.EXPERIENCED_GAP }}</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded border border-slate-200">
+                        <span class="font-semibold text-slate-800">No Previous Experience</span>
+                        <span class="font-bold text-slate-900">{{ pathway_counts.NO_EXPERIENCE }}</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded border border-slate-200">
+                        <span class="font-semibold text-slate-800">Career Shift & Transition</span>
+                        <span class="font-bold text-slate-900">{{ pathway_counts.CAREER_SHIFT }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Management Sections Navigation -->
+            <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-3">
+                <h2 class="font-bold text-base text-slate-900 mb-2">Platform Content Moderation</h2>
+                <div class="grid grid-cols-2 gap-3 text-xs">
+                    <a href="{{ url_for('admin_verify_recruiters') }}" class="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded font-semibold text-slate-800 transition">
+                        🏢 Recruiter Verifications
+                    </a>
+                    <a href="{{ url_for('admin_manage_jobs') }}" class="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded font-semibold text-slate-800 transition">
+                        💼 Job Moderation
+                    </a>
+                    <a href="{{ url_for('admin_manage_learning') }}" class="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded font-semibold text-slate-800 transition">
+                        📚 Learning Resources
+                    </a>
+                    <a href="{{ url_for('admin_manage_government') }}" class="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded font-semibold text-slate-800 transition">
+                        🏛️ Government Schemes
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Recent Platform Audit Logs -->
+        <div class="lg:col-span-6">
+            <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+                <h2 class="font-bold text-base text-slate-900 mb-4 pb-2 border-b border-slate-100">Audit & System Activity Logs</h2>
+                <div class="divide-y divide-slate-100 text-xs space-y-2">
+                    {% if audit_logs %}
+                        {% for log in audit_logs %}
+                            <div class="py-2.5">
+                                <div class="flex justify-between items-center text-slate-400 text-[11px] mb-0.5">
+                                    <span class="font-semibold text-slate-700">{{ log.action_type }}</span>
+                                    <span>{{ log.created_at }}</span>
+                                </div>
+                                <div class="text-slate-600">{{ log.details }}</div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="py-8 text-center text-slate-400">
+                            No administrative audit events recorded yet.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

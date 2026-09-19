@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Explore Verified Opportunities — ReTurn Platform{% endblock %}
+
+{% block content %}
+<div class="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Explore Re-Entry Opportunities</h1>
+        <p class="text-xs sm:text-sm text-slate-600 mt-1 max-w-3xl">
+            Browse verified recruiter returnships, public sector openings, and external fellowship opportunities. Every listing displays a verified trust badge denoting its source.
+        </p>
+    </div>
+
+    <!-- Trust Explanation Banner -->
+    <div class="p-4 bg-white border border-slate-200 rounded-lg shadow-sm mb-8">
+        <div class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Platform Trust Standards</div>
+        <div class="flex flex-wrap items-center gap-4 text-xs">
+            <div class="flex items-center gap-1.5">
+                <span class="badge-verified-recruiter">Verified Recruiter</span>
+                <span class="text-slate-600">Admin-approved corporate employer</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+                <span class="badge-government-source">Government Source</span>
+                <span class="text-slate-600">Direct ministry / public portal link</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+                <span class="badge-external-source">External Source</span>
+                <span class="text-slate-600">Always verify on employer's official careers site</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm mb-8">
+        <form method="GET" action="{{ url_for('explore_opportunities') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+            <div>
+                <label for="work_mode" class="block font-semibold text-slate-700 mb-1">Work Mode</label>
+                <select id="work_mode" name="work_mode" class="w-full p-2 border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900">
+                    <option value="">All Work Modes</option>
+                    <option value="Remote" {% if request.args.get('work_mode') == 'Remote' %}selected{% endif %}>Remote Only</option>
+                    <option value="Hybrid" {% if request.args.get('work_mode') == 'Hybrid' %}selected{% endif %}>Hybrid (Office + Home)</option>
+                    <option value="On-site" {% if request.args.get('work_mode') == 'On-site' %}selected{% endif %}>On-site</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="source" class="block font-semibold text-slate-700 mb-1">Source Verification Type</label>
+                <select id="source" name="source" class="w-full p-2 border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900">
+                    <option value="">All Sources</option>
+                    <option value="VERIFIED_RECRUITER" {% if request.args.get('source') == 'VERIFIED_RECRUITER' %}selected{% endif %}>Verified Recruiter</option>
+                    <option value="GOVERNMENT_SOURCE" {% if request.args.get('source') == 'GOVERNMENT_SOURCE' %}selected{% endif %}>Government Source</option>
+                    <option value="EXTERNAL_SOURCE" {% if request.args.get('source') == 'EXTERNAL_SOURCE' %}selected{% endif %}>External Public Source</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="query" class="block font-semibold text-slate-700 mb-1">Keywords / Role / Skills</label>
+                <input type="text" id="query" name="q" placeholder="e.g. Python, Operations, Writing" value="{{ request.args.get('q', '') }}"
+                    class="w-full p-2 border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-900">
+            </div>
+
+            <div class="flex items-end gap-2">
+                <button type="submit" class="flex-1 py-2 px-3 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded transition">
+                    Filter Jobs
+                </button>
+                <a href="{{ url_for('explore_opportunities') }}" class="py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded border border-slate-300 transition text-center">
+                    Reset
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Opportunity Cards -->
+    <div class="space-y-4">
+        {% if jobs %}
+            {% for job in jobs %}
+                <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm hover:border-slate-300 transition flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="space-y-2">
+                        <div class="flex flex-wrap items-center gap-2">
+                            {% if job.source_type == 'VERIFIED_RECRUITER' %}
+                                <span class="badge-verified-recruiter">Verified Recruiter</span>
+                            {% elif job.source_type == 'GOVERNMENT_SOURCE' %}
+                                <span class="badge-government-source">Government Source</span>
+                            {% else %}
+                                <span class="badge-external-source">External Opportunity</span>
+                            {% endif %}
+                            <span class="text-xs text-slate-500">&bull; {{ job.work_mode }} &bull; {{ job.location }}</span>
+                            {% if job.salary_range %}
+                                <span class="text-xs font-semibold text-slate-700">&bull; {{ job.salary_range }}</span>
+                            {% endif %}
+                        </div>
+
+                        <h2 class="text-lg font-bold text-slate-900">
+                            <a href="{{ url_for('job_detail', job_id=job.id) }}" class="hover:text-teal-800 transition">{{ job.title }}</a>
+                        </h2>
+
+                        <div class="text-xs text-slate-600 font-medium">
+                            {{ job.company_name }}
+                        </div>
+
+                        <div class="text-xs text-slate-500 line-clamp-2 max-w-2xl leading-relaxed">
+                            {{ job.description }}
+                        </div>
+
+                        <div class="flex flex-wrap gap-1.5 pt-1">
+                            {% for skill in job.skills_required.split(',') %}
+                                <span class="text-[11px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded">{{ skill.strip() }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="shrink-0 flex flex-col sm:flex-row md:flex-col items-start md:items-end gap-2 pt-2 md:pt-0">
+                        <div class="text-[11px] text-slate-400">
+                            Deadline: {{ job.application_deadline if job.application_deadline else 'Open' }}
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button class="bookmark-btn text-xs text-slate-600 border border-slate-200 px-2.5 py-1.5 rounded hover:bg-slate-50" data-item-type="JOB" data-item-id="{{ job.id }}">
+                                ☆ Save
+                            </button>
+                            <a href="{{ url_for('job_detail', job_id=job.id) }}" class="px-4 py-1.5 bg-slate-900 text-white text-xs font-semibold rounded hover:bg-slate-800 transition">
+                                View Details &rarr;
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <!-- Honest Empty State -->
+            <div class="bg-white p-12 rounded-lg border border-slate-200 text-center max-w-xl mx-auto space-y-3">
+                <div class="text-xl font-bold text-slate-400">💼</div>
+                <h3 class="text-base font-bold text-slate-900">No Matching Opportunities Available</h3>
+                <p class="text-xs text-slate-500">
+                    No verified opportunities match your current filters. As employers register and pass domain verification, new positions will appear here.
+                </p>
+                <div class="pt-2">
+                    <a href="{{ url_for('explore_opportunities') }}" class="px-4 py-2 bg-slate-900 text-white text-xs font-semibold rounded hover:bg-slate-800 transition">
+                        View All Listings &rarr;
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

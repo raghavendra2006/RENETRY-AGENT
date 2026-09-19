@@ -1,0 +1,368 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — ReTurn Platform{% endblock %}
+
+{% block content %}
+<div class="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header & Welcome -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between pb-6 border-b border-slate-200 gap-4">
+        <div>
+            <div class="text-xs font-semibold text-teal-800 uppercase tracking-wider mb-1">
+                Candidate Operations Workspace
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">
+                Welcome back, {{ user.full_name }}
+            </h1>
+            <p class="text-xs text-slate-500 mt-1">
+                Track your re-entry progress, follow structured roadmap milestones, and access verified opportunities.
+            </p>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <a href="{{ url_for('choose_career_path') }}" class="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 transition">
+                Change Pathway
+            </a>
+            <a href="{{ url_for('complete_profile') }}" class="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 transition">
+                Edit Profile
+            </a>
+        </div>
+    </div>
+
+    <!-- Core UX Banner: "What Should I Do Next?" -->
+    <div class="mt-6 next-action-banner flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="space-y-1">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-teal-800 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-teal-600 animate-pulse"></span>
+                Recommended Next Step
+            </div>
+            {% if next_task %}
+                <div class="text-sm font-bold text-slate-900">{{ next_task.task_description }}</div>
+                <div class="text-xs text-slate-500">Stage: {{ next_task.stage_title }}</div>
+            {% else %}
+                <div class="text-sm font-bold text-slate-900">All roadmap milestones currently completed!</div>
+                <div class="text-xs text-slate-500">Explore verified opportunities or practice mock interviews.</div>
+            {% endif %}
+        </div>
+        <div>
+            {% if next_task and next_task.resource_url %}
+                <a href="{{ next_task.resource_url }}" class="inline-block px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded shadow-sm transition">
+                    Continue Task &rarr;
+                </a>
+            {% else %}
+                <a href="{{ url_for('explore_opportunities') }}" class="inline-block px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded shadow-sm transition">
+                    Browse Opportunities &rarr;
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- AI Career-Gap Diagnostic Snapshot Card -->
+    {% if gap_analysis %}
+    <div class="mt-6 p-5 rounded-xl bg-gradient-to-r from-teal-900 via-slate-900 to-indigo-950 text-white shadow-md">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div class="space-y-1.5">
+                <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-teal-400 text-teal-950">
+                        AI Readiness Diagnostic
+                    </span>
+                    <span class="text-xs text-teal-200">
+                        Target: <strong class="text-white">{{ gap_analysis.target_role or 'Professional Returnee' }}</strong>
+                    </span>
+                </div>
+                <h3 class="text-base font-bold text-white">
+                    Status: <span class="text-teal-300">{{ gap_analysis.readiness_level }} Readiness</span>
+                </h3>
+                <p class="text-xs text-slate-300 max-w-2xl line-clamp-2">
+                    {{ gap_analysis.current_position_analysis or gap_analysis.career_analysis }}
+                </p>
+                {% if gap_analysis.skill_gaps %}
+                <div class="flex items-center gap-1.5 pt-1">
+                    <span class="text-[11px] text-slate-400 font-medium">Top Focus:</span>
+                    {% for gap in gap_analysis.skill_gaps[:3] %}
+                    <span class="px-2 py-0.5 text-[10px] rounded bg-white/10 text-teal-200 border border-white/10">
+                        {{ gap }}
+                    </span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="shrink-0 flex flex-col items-center gap-2">
+                {% set readiness_score = gap_analysis.readiness_score if gap_analysis.readiness_score is defined and gap_analysis.readiness_score else 0 %}
+                {% if readiness_score %}
+                <div class="text-center">
+                    <div class="text-2xl font-extrabold text-teal-300">{{ readiness_score }}%</div>
+                    <div class="text-[10px] text-slate-400 uppercase tracking-wider">Readiness</div>
+                    <div class="w-24 bg-slate-700 rounded-full h-1.5 mt-1">
+                        <div class="bg-teal-400 h-1.5 rounded-full transition-all" style="width: {{ readiness_score }}%"></div>
+                    </div>
+                </div>
+                {% endif %}
+                <a href="{{ url_for('career_analysis_view') }}" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-slate-900 bg-teal-300 hover:bg-teal-200 rounded-lg shadow-sm transition">
+                    <span>Full Gap Strategy & 90-Day Plan</span>
+                    <span>&rarr;</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Key Metrics Panel: Profile, Pathway, Roadmap, Resume -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <!-- Metric 1: Current Pathway -->
+        <div class="bg-white p-4 rounded border border-slate-200">
+            <div class="text-xs font-semibold text-slate-500 mb-1">Current Pathway</div>
+            <div class="font-bold text-sm text-slate-900">
+                {% if pathway == 'EXPERIENCED_GAP' %}
+                    Experienced + Gap
+                {% elif pathway == 'NO_EXPERIENCE' %}
+                    No Previous Experience
+                {% elif pathway == 'CAREER_SHIFT' %}
+                    Career Shift & Pivot
+                {% else %}
+                    Pathway Pending
+                {% endif %}
+            </div>
+            <div class="mt-2 text-[11px] text-teal-700">
+                {% if pathway == 'EXPERIENCED_GAP' %}
+                    <a href="{{ url_for('path_experienced') }}" class="hover:underline">Open Experienced Hub &rarr;</a>
+                {% elif pathway == 'NO_EXPERIENCE' %}
+                    <a href="{{ url_for('path_beginner') }}" class="hover:underline">Open Beginner Hub &rarr;</a>
+                {% elif pathway == 'CAREER_SHIFT' %}
+                    <a href="{{ url_for('path_transition') }}" class="hover:underline">Open Shift Hub &rarr;</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Metric 2: Roadmap Progress -->
+        <div class="bg-white p-4 rounded border border-slate-200">
+            <div class="flex justify-between items-center text-xs text-slate-500 mb-1">
+                <span class="font-semibold">Roadmap Completion</span>
+                <span id="roadmap-progress-text" class="font-bold text-slate-800">{{ roadmap_info.percentage }}%</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-2 mb-2">
+                <div id="roadmap-progress-bar" class="bg-teal-600 h-2 rounded-full transition-all duration-300" style="width: {{ roadmap_info.percentage or 0 }}%;"></div>
+            </div>
+            <div class="text-[11px] text-slate-500">
+                <span id="roadmap-completed-count">{{ roadmap_info.completed_tasks }}</span> of {{ roadmap_info.total_tasks }} tasks completed &bull; <a href="{{ url_for('user_roadmap') }}" class="text-teal-700 font-semibold hover:underline">View Roadmap</a>
+            </div>
+        </div>
+
+        <!-- Metric 3: Resume Status -->
+        <div class="bg-white p-4 rounded border border-slate-200">
+            <div class="text-xs font-semibold text-slate-500 mb-1">Resume Status</div>
+            <div class="font-bold text-sm text-slate-900">
+                {% if latest_resume %}
+                    Analyzed ({{ (latest_resume.filename or '')[:18] }}...)
+                {% else %}
+                    No Resume Uploaded
+                {% endif %}
+            </div>
+            <div class="mt-2 text-[11px] text-teal-700">
+                <a href="{{ url_for('resume_hub') }}" class="hover:underline">
+                    {% if latest_resume %}Review Suggestions &rarr;{% else %}Upload & Analyze &rarr;{% endif %}
+                </a>
+            </div>
+        </div>
+
+        <!-- Metric 4: Profile Completeness -->
+        <div class="bg-white p-4 rounded border border-slate-200">
+            <div class="text-xs font-semibold text-slate-500 mb-1">Profile Completeness</div>
+            <div class="font-bold text-sm text-slate-900">
+                {% if profile and profile.profile_completed %}
+                    100% Complete
+                {% else %}
+                    Incomplete Details
+                {% endif %}
+            </div>
+            <div class="mt-2 text-[11px] text-teal-700">
+                <a href="{{ url_for('complete_profile') }}" class="hover:underline">Update Preferences &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Workspace Layout: 2 Columns (7-stage Roadmap Snapshot + Activity & Bookmarks) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- Left: Interactive 7-Stage Roadmap Overview -->
+        <div class="lg:col-span-8 space-y-6">
+            <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                    <div>
+                        <h2 class="font-bold text-base text-slate-900">7-Stage Career Re-Entry Roadmap</h2>
+                        <p class="text-xs text-slate-500">Track tasks from profile completion through learning, practice, and applications.</p>
+                    </div>
+                    <a href="{{ url_for('user_roadmap') }}" class="text-xs font-semibold text-teal-700 hover:underline">
+                        Open Full Roadmap &rarr;
+                    </a>
+                </div>
+
+                <div class="mt-6 space-y-4">
+                    {% for task in roadmap_info.tasks[:5] %}
+                        <div class="flex items-start gap-3 p-3 rounded border {% if task.is_completed %}bg-slate-50 border-slate-200{% else %}bg-white border-slate-200{% endif %}">
+                            <input type="checkbox" data-task-id="{{ task.id }}" class="roadmap-task-checkbox mt-0.5 rounded text-teal-600 focus:ring-teal-500 cursor-pointer" {% if task.is_completed %}checked="checked"{% endif %}>
+                            <div class="flex-1 text-xs">
+                                <div id="task-label-{{ task.id }}" class="font-medium {% if task.is_completed %}line-through text-slate-400{% else %}text-slate-800{% endif %}">
+                                    {{ task.task_description }}
+                                </div>
+                                <div class="text-[10px] text-slate-400 mt-0.5">Stage {{ task.stage_number }}: {{ task.stage_title }}</div>
+                            </div>
+                            {% if task.resource_url %}
+                                <a href="{{ task.resource_url }}" class="text-xs text-teal-700 font-semibold hover:underline shrink-0">
+                                    Open
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                {% if roadmap_info.tasks|length > 5 %}
+                    <div class="mt-4 pt-3 border-t border-slate-100 text-center">
+                        <a href="{{ url_for('user_roadmap') }}" class="text-xs text-slate-500 hover:text-slate-800">
+                            + {{ roadmap_info.tasks|length - 5 }} additional stages & tasks in full roadmap &rarr;
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Opportunities Matched Section -->
+            <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                    <div>
+                        <h2 class="font-bold text-base text-slate-900">Recommended Verified Opportunities</h2>
+                        <p class="text-xs text-slate-500">Filtered for your career pathway and re-entry focus.</p>
+                    </div>
+                    <a href="{{ url_for('explore_opportunities') }}" class="text-xs font-semibold text-teal-700 hover:underline">
+                        View All Opportunities &rarr;
+                    </a>
+                </div>
+
+                <div class="mt-4 space-y-3">
+                    {% if matching_jobs %}
+                        {% for job in matching_jobs %}
+                            <div class="p-4 rounded border border-slate-200 hover:border-slate-300 transition flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div>
+                                    <div class="flex flex-wrap items-center gap-2 mb-1">
+                                        {% if job.source_type == 'VERIFIED_RECRUITER' %}
+                                            <span class="badge-verified-recruiter">Verified Recruiter</span>
+                                        {% elif job.source_type == 'GOVERNMENT_SOURCE' %}
+                                            <span class="badge-government-source">Govt Source</span>
+                                        {% else %}
+                                            <span class="badge-external-source">External Opportunity</span>
+                                        {% endif %}
+
+                                        {% if job.match_score and job.match_score > 0 %}
+                                            <span class="px-2 py-0.5 text-[10px] font-bold rounded-full {% if job.match_score >= 80 %}bg-emerald-100 text-emerald-800 border border-emerald-300{% elif job.match_score >= 60 %}bg-teal-100 text-teal-800 border border-teal-300{% else %}bg-slate-100 text-slate-700 border border-slate-200{% endif %}">
+                                                {{ job.match_score }}% Match
+                                            </span>
+                                        {% endif %}
+
+                                        <span class="text-xs text-slate-500">&bull; {{ job.work_mode }} &bull; {{ job.location }}</span>
+                                    </div>
+                                    <h3 class="font-bold text-sm text-slate-900">{{ job.title }}</h3>
+                                    <div class="text-xs text-slate-600 mt-0.5">{{ job.company_name }}</div>
+                                    {% if job.match_reasons %}
+                                    <div class="flex flex-wrap gap-1 mt-1.5">
+                                        {% for reason in job.match_reasons %}
+                                        <span class="text-[10px] bg-slate-50 text-slate-600 px-1.5 py-0.5 rounded border border-slate-200">
+                                            ✓ {{ reason }}
+                                        </span>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="shrink-0 flex items-center gap-2">
+                                    <button class="bookmark-btn text-xs px-2.5 py-1.5 rounded transition flex items-center gap-1 {% if job.id in saved_job_ids %}bg-teal-50 text-teal-800 border border-teal-300 font-semibold{% else %}text-slate-600 border border-slate-200 hover:bg-slate-50{% endif %}" data-item-type="JOB" data-item-id="{{ job.id }}">
+                                        <span>{% if job.id in saved_job_ids %}★ Saved{% else %}☆ Save{% endif %}</span>
+                                    </button>
+                                    <a href="{{ url_for('job_detail', job_id=job.id) }}" class="px-3 py-1.5 bg-slate-900 text-white text-xs font-semibold rounded hover:bg-slate-800 transition">
+                                        Details &rarr;
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <!-- Realistic Empty State -->
+                        <div class="p-8 text-center text-xs text-slate-500">
+                            No matching verified opportunities are currently available for your exact filter set.
+                            <div class="mt-2">
+                                <a href="{{ url_for('explore_opportunities') }}" class="text-teal-700 font-semibold hover:underline">Browse all open opportunities &rarr;</a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Saved Items, Government Notices & Quick Learning -->
+        <div class="lg:col-span-4 space-y-6">
+            <!-- Saved / Bookmarked Items -->
+            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <h3 class="font-bold text-sm text-slate-900">Saved Opportunities</h3>
+                    <a href="{{ url_for('saved_items') }}" class="text-xs text-teal-700 hover:underline">View All</a>
+                </div>
+
+                <div class="mt-3">
+                    {% if saved_items %}
+                        <div class="space-y-2">
+                            {% for item in saved_items[:3] %}
+                                <div class="text-xs p-2 rounded bg-slate-50 border border-slate-200">
+                                    <div class="font-bold text-slate-800">{{ item.title }}</div>
+                                    <div class="text-[11px] text-slate-500">{{ item.type_label }} &bull; Saved on {{ (item.saved_at or '')[:10] }}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="py-4 text-center text-xs text-slate-400">
+                            No saved opportunities or schemes yet.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Verified Government Schemes Shortcut -->
+            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <h3 class="font-bold text-sm text-slate-900">Government Support</h3>
+                    <a href="{{ url_for('government_hub') }}" class="text-xs text-teal-700 hover:underline">Explore All</a>
+                </div>
+                <div class="mt-3 space-y-2 text-xs">
+                    <div class="p-2.5 rounded bg-blue-50/50 border border-blue-100">
+                        <div class="font-bold text-blue-900">Stand-Up India Scheme</div>
+                        <div class="text-[11px] text-slate-600 mt-0.5">Rs. 10 Lakh to 1 Crore loans for women greenfield ventures.</div>
+                        <a href="{{ url_for('government_hub') }}" class="text-[11px] text-blue-800 font-semibold hover:underline mt-1 inline-block">Check Details &rarr;</a>
+                    </div>
+                    <div class="p-2.5 rounded bg-blue-50/50 border border-blue-100">
+                        <div class="font-bold text-blue-900">PMMY Mudra (Mahila Udyami)</div>
+                        <div class="text-[11px] text-slate-600 mt-0.5">Collateral-free micro-enterprise funding up to Rs. 10 Lakhs.</div>
+                        <a href="{{ url_for('government_hub') }}" class="text-[11px] text-blue-800 font-semibold hover:underline mt-1 inline-block">Check Details &rarr;</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommended Learning Module Shortcut -->
+            <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <h3 class="font-bold text-sm text-slate-900">Verified Learning</h3>
+                    <a href="{{ url_for('learning_catalog') }}" class="text-xs text-teal-700 hover:underline">Full Catalog</a>
+                </div>
+                <div class="mt-3 space-y-2 text-xs">
+                    <div class="p-2.5 rounded bg-slate-50 border border-slate-200">
+                        <div class="font-bold text-slate-900">STAR Method Interview Prep</div>
+                        <div class="text-[11px] text-slate-500">National Career Service &bull; Free</div>
+                        <a href="{{ url_for('learning_catalog', category='Interview Preparation') }}" class="text-[11px] text-teal-700 font-semibold hover:underline mt-1 inline-block">Start Module &rarr;</a>
+                    </div>
+                    <div class="p-2.5 rounded bg-slate-50 border border-slate-200">
+                        <div class="font-bold text-slate-900">Cloud Productivity & Office Tools</div>
+                        <div class="text-[11px] text-slate-500">SWAYAM / UGC &bull; Free</div>
+                        <a href="{{ url_for('learning_catalog', category='Technical Skills') }}" class="text-[11px] text-teal-700 font-semibold hover:underline mt-1 inline-block">Start Module &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/roadmap.js') }}"></script>
+{% endblock %}

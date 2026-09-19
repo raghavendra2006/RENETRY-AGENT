@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Government Opportunities — Admin Console — ReTurn Platform{% endblock %}
+
+{% block content %}
+<div class="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-200 gap-4 mb-6">
+        <div>
+            <div class="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                <a href="{{ url_for('admin_dashboard') }}" class="hover:underline">Admin Console</a>
+                <span>&bull;</span>
+                <span class="text-blue-800 font-semibold">Government Schemes</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Manage Verified Government Opportunities</h1>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                Maintain accurate criteria, official links (.gov.in / .nic.in), and statutory age concessions for returning women.
+            </p>
+        </div>
+
+        <div>
+            <button type="button" onclick="toggleAddSchemeForm()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-lg transition shadow-sm">
+                + Add Verified Scheme
+            </button>
+        </div>
+    </div>
+
+    <!-- Collapsible Add Scheme Form -->
+    <div id="add-scheme-container" class="hidden mb-8 bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+        <h2 class="text-base font-bold text-slate-900 pb-3 border-b border-slate-100 mb-4">Add Verified Government Scheme / Concession</h2>
+        <form method="POST" action="{{ url_for('admin_add_government') }}" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Scheme Title *</label>
+                    <input type="text" name="title" required placeholder="e.g. Mahila Udyam Nidhi Scheme" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Department / Ministry *</label>
+                    <input type="text" name="department" required placeholder="e.g. Ministry of MSME / SIDBI" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">State / Scope</label>
+                    <input type="text" name="state" placeholder="All India or specific state" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Sector</label>
+                    <input type="text" name="sector" placeholder="e.g. Entrepreneurship / Public Sector" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Type</label>
+                    <input type="text" name="job_type" placeholder="e.g. Scheme / Direct Recruitment" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Eligibility Criteria</label>
+                <textarea name="eligibility_criteria" rows="2" placeholder="Eligibility outline and qualifications" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Age Limits</label>
+                    <input type="text" name="age_limit" placeholder="e.g. 18-45 years" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Concessions / Relaxations</label>
+                    <input type="text" name="reservation_relaxations" placeholder="e.g. 5-year upper age relaxation for women returnees" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Official Notification URL (.gov.in)</label>
+                    <input type="url" name="official_notification_url" placeholder="https://msme.gov.in/..." class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Apply URL</label>
+                    <input type="url" name="apply_url" placeholder="https://udyamregistration.gov.in/..." class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:border-teal-600">
+                </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-3">
+                <button type="button" onclick="toggleAddSchemeForm()" class="px-3 py-1.5 text-xs text-slate-600 hover:text-slate-800">
+                    Cancel
+                </button>
+                <button type="submit" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-lg shadow-sm transition">
+                    Publish Scheme
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Existing Opportunities Table -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <table class="min-w-full divide-y divide-slate-200 text-xs">
+            <thead class="bg-slate-50">
+                <tr>
+                    <th class="px-4 py-3 text-left font-bold text-slate-700 uppercase tracking-wider">Scheme / Notice</th>
+                    <th class="px-4 py-3 text-left font-bold text-slate-700 uppercase tracking-wider">Department / Sector</th>
+                    <th class="px-4 py-3 text-left font-bold text-slate-700 uppercase tracking-wider">State</th>
+                    <th class="px-4 py-3 text-left font-bold text-slate-700 uppercase tracking-wider">Official Portal</th>
+                    <th class="px-4 py-3 text-right font-bold text-slate-700 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 bg-white">
+                {% for opp in opportunities %}
+                    <tr class="hover:bg-slate-50/50 transition">
+                        <td class="px-4 py-3">
+                            <div class="font-bold text-slate-900">{{ opp.title }}</div>
+                            <div class="text-slate-500 text-[11px]">{{ opp.job_type }}</div>
+                        </td>
+                        <td class="px-4 py-3 text-slate-600">
+                            {{ opp.department }} <span class="text-slate-400">({{ opp.sector }})</span>
+                        </td>
+                        <td class="px-4 py-3 text-slate-600">
+                            {{ opp.state }}
+                        </td>
+                        <td class="px-4 py-3">
+                            {% if opp.official_notification_url or opp.official_portal_url %}
+                            <a href="{{ opp.official_notification_url or opp.official_portal_url }}" target="_blank" rel="noopener" class="text-blue-700 hover:underline font-mono text-[11px]">
+                                Official Link &rarr;
+                            </a>
+                            {% else %}
+                            <span class="text-slate-400">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3 text-right">
+                            <div class="inline-flex items-center gap-2">
+                                <a href="{{ url_for('admin_edit_government', opp_id=opp.id) }}" class="px-2.5 py-1 rounded border border-slate-300 text-slate-700 hover:bg-slate-100 font-semibold text-[11px] transition">
+                                    Edit
+                                </a>
+                                <form method="POST" action="{{ url_for('admin_delete_government', opp_id=opp.id) }}" onsubmit="return confirm('Remove this government opportunity?');" class="inline">
+                                    <button type="submit" class="px-2.5 py-1 rounded border border-rose-200 text-rose-600 hover:bg-rose-50 font-semibold text-[11px] transition">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleAddSchemeForm() {
+    const el = document.getElementById('add-scheme-container');
+    if (el) {
+        el.classList.toggle('hidden');
+    }
+}
+</script>
+{% endblock %}

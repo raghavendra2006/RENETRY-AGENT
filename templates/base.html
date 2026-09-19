@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ReTurn — Women Career Re-Entry & Opportunity Platform{% endblock %}</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            navy: '#0f172a',
+                            blue: '#1e3a8a',
+                            teal: '#0d9488',
+                            emerald: '#059669',
+                            slate: '#334155'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body class="flex flex-col min-h-full bg-slate-50 text-slate-800 antialiased">
+    <!-- Top Navigation Bar -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <a href="{{ url_for('landing') }}" class="flex items-center gap-2 group">
+                        <span class="w-8 h-8 rounded bg-slate-900 text-white flex items-center justify-center font-bold text-sm tracking-wider">RT</span>
+                        <div class="flex flex-col">
+                            <span class="font-bold text-lg text-slate-900 leading-none group-hover:text-teal-700 transition">ReTurn</span>
+                            <span class="text-[10px] text-slate-500 font-medium tracking-tight">Career Re-Entry & Opportunity</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-600">
+                    <a href="{{ url_for('learning_catalog') }}" class="hover:text-slate-900 transition">Learning</a>
+                    <a href="{{ url_for('explore_opportunities') }}" class="hover:text-slate-900 transition">Explore</a>
+
+                    {% if current_user and current_user.user %}
+                        {% if current_user.user.role == 'USER' %}
+                            <a href="{{ url_for('user_dashboard') }}" class="hover:text-slate-900 transition">Dashboard</a>
+                            <a href="{{ url_for('career_analysis_view') }}" class="hover:text-slate-900 transition">AI Analysis</a>
+                            <a href="{{ url_for('user_roadmap') }}" class="hover:text-slate-900 transition">Roadmap</a>
+                            <a href="{{ url_for('resume_hub') }}" class="hover:text-slate-900 transition">Resume Hub</a>
+                            <a href="{{ url_for('saved_items') }}" class="hover:text-slate-900 transition">Saved</a>
+                        {% elif current_user.user.role == 'RECRUITER' %}
+                            <a href="{{ url_for('recruiter_dashboard') }}" class="hover:text-slate-900 transition">Recruiter Portal</a>
+                            <a href="{{ url_for('manage_recruiter_jobs') }}" class="hover:text-slate-900 transition">Manage Vacancies</a>
+                            <a href="{{ url_for('post_job') }}" class="hover:text-slate-900 transition">Post Vacancy</a>
+                            <a href="{{ url_for('recruiter_profile') }}" class="hover:text-slate-900 transition">Company Profile</a>
+                        {% elif current_user.user.role == 'ADMIN' %}
+                            <a href="{{ url_for('admin_dashboard') }}" class="hover:text-slate-900 transition">Admin Console</a>
+                            <a href="{{ url_for('admin_manage_jobs') }}" class="hover:text-slate-900 transition">Job Moderation</a>
+                            <a href="{{ url_for('admin_verify_recruiters') }}" class="hover:text-slate-900 transition">Recruiter Verification</a>
+                            <a href="{{ url_for('admin_manage_users') }}" class="hover:text-slate-900 transition">Users</a>
+                            <a href="{{ url_for('admin_manage_government') }}" class="hover:text-slate-900 transition">Gov Schemes</a>
+                        {% endif %}
+                    {% endif %}
+                </nav>
+
+                <!-- Auth State Actions -->
+                <div class="hidden md:flex items-center space-x-4 text-sm">
+                    {% if current_user and current_user.user %}
+                        <div class="flex items-center gap-3">
+                            <!-- In-App Notification Bell -->
+                            <a href="{{ url_for('user_notifications') }}" class="relative p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-full transition" title="In-app Notifications">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                                </svg>
+                                {% if unread_notifications_count > 0 %}
+                                    <span class="absolute 1 top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-600 text-[10px] font-bold text-white shadow-sm ring-1 ring-white">
+                                        {{ unread_notifications_count }}
+                                    </span>
+                                {% endif %}
+                            </a>
+                            <span class="text-xs text-slate-500">Signed in as <strong class="text-slate-700">{{ current_user.user.full_name }}</strong> ({{ current_user.user.role }})</span>
+                            <a href="{{ url_for('auth_logout') }}" class="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded border border-slate-300 transition">Sign Out</a>
+                        </div>
+                    {% else %}
+                        <!-- Login Dropdown Trigger -->
+                        <div class="relative inline-block text-left" id="login-dropdown-wrapper">
+                            <button id="login-dropdown-btn" type="button" class="inline-flex items-center gap-1.5 px-3 py-2 text-slate-700 hover:text-slate-900 font-medium text-sm rounded hover:bg-slate-100 transition focus:outline-none" aria-expanded="false" aria-haspopup="true">
+                                <span>Login</span>
+                                <svg class="w-3.5 h-3.5 text-slate-500 transition-transform duration-200" id="login-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+
+                            <!-- Dropdown Menu -->
+                            <div id="login-dropdown-menu" class="hidden absolute right-0 mt-2 w-56 rounded-lg bg-white border border-slate-200 shadow-xl py-1 z-50 transition-all duration-150 transform origin-top-right divide-y divide-slate-100">
+                                <div class="px-3 py-2 bg-slate-50">
+                                    <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Select Portal</p>
+                                </div>
+                                <div class="py-1">
+                                    <a href="/login/user" class="group flex items-center gap-2.5 px-3 py-2 text-xs text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition">
+                                        <span class="w-6 h-6 rounded bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-[11px] group-hover:bg-slate-900 group-hover:text-white transition">1</span>
+                                        <div>
+                                            <div class="font-semibold text-slate-900">User Login</div>
+                                            <div class="text-[10px] text-slate-400">Candidate & career re-entry</div>
+                                        </div>
+                                    </a>
+                                    <a href="/login/recruiter" class="group flex items-center gap-2.5 px-3 py-2 text-xs text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition">
+                                        <span class="w-6 h-6 rounded bg-teal-50 text-teal-800 flex items-center justify-center font-bold text-[11px] group-hover:bg-teal-800 group-hover:text-white transition">2</span>
+                                        <div>
+                                            <div class="font-semibold text-slate-900">Recruiter Login</div>
+                                            <div class="text-[10px] text-slate-400">Employer & vacancy posting</div>
+                                        </div>
+                                    </a>
+                                    <a href="/login/admin" class="group flex items-center gap-2.5 px-3 py-2 text-xs text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition">
+                                        <span class="w-6 h-6 rounded bg-purple-50 text-purple-800 flex items-center justify-center font-bold text-[11px] group-hover:bg-purple-900 group-hover:text-white transition">3</span>
+                                        <div>
+                                            <div class="font-semibold text-slate-900">Admin Login</div>
+                                            <div class="text-[10px] text-slate-400">Platform operations & verification</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="{{ url_for('auth_register') }}" class="px-4 py-2 text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded transition shadow-sm">Create Account</a>
+                    {% endif %}
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" type="button" class="p-2 rounded text-slate-600 hover:text-slate-900 focus:outline-none" aria-label="Toggle navigation">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 bg-white px-4 pt-2 pb-4 space-y-2 text-sm">
+            <a href="{{ url_for('learning_catalog') }}" class="block py-2 text-slate-600 hover:text-slate-900">Learning</a>
+            <a href="{{ url_for('explore_opportunities') }}" class="block py-2 text-slate-600 hover:text-slate-900">Explore</a>
+            {% if current_user and current_user.user %}
+                {% if current_user.user.role == 'USER' %}
+                    <a href="{{ url_for('user_dashboard') }}" class="block py-2 text-slate-600 hover:text-slate-900">Dashboard</a>
+                    <a href="{{ url_for('career_analysis_view') }}" class="block py-2 text-slate-600 hover:text-slate-900">AI Career-Gap Analysis</a>
+                    <a href="{{ url_for('user_roadmap') }}" class="block py-2 text-slate-600 hover:text-slate-900">Roadmap</a>
+                    <a href="{{ url_for('resume_hub') }}" class="block py-2 text-slate-600 hover:text-slate-900">Resume Hub</a>
+                    <a href="{{ url_for('saved_items') }}" class="block py-2 text-slate-600 hover:text-slate-900">Saved Items</a>
+                    <a href="{{ url_for('user_notifications') }}" class="block py-2 text-slate-600 hover:text-slate-900">Notifications ({{ unread_notifications_count }})</a>
+                {% elif current_user.user.role == 'RECRUITER' %}
+                    <a href="{{ url_for('recruiter_dashboard') }}" class="block py-2 text-slate-600 hover:text-slate-900">Recruiter Dashboard</a>
+                    <a href="{{ url_for('manage_recruiter_jobs') }}" class="block py-2 text-slate-600 hover:text-slate-900">Manage Vacancies</a>
+                    <a href="{{ url_for('post_job') }}" class="block py-2 text-slate-600 hover:text-slate-900">Post Vacancy</a>
+                    <a href="{{ url_for('recruiter_profile') }}" class="block py-2 text-slate-600 hover:text-slate-900">Company Profile</a>
+                    <a href="{{ url_for('user_notifications') }}" class="block py-2 text-slate-600 hover:text-slate-900">Notifications ({{ unread_notifications_count }})</a>
+                {% elif current_user.user.role == 'ADMIN' %}
+                    <a href="{{ url_for('admin_dashboard') }}" class="block py-2 text-slate-600 hover:text-slate-900">Admin Console</a>
+                    <a href="{{ url_for('admin_manage_jobs') }}" class="block py-2 text-slate-600 hover:text-slate-900">Job Moderation</a>
+                    <a href="{{ url_for('admin_verify_recruiters') }}" class="block py-2 text-slate-600 hover:text-slate-900">Recruiter Verification</a>
+                    <a href="{{ url_for('admin_manage_users') }}" class="block py-2 text-slate-600 hover:text-slate-900">User Directory</a>
+                    <a href="{{ url_for('admin_manage_government') }}" class="block py-2 text-slate-600 hover:text-slate-900">Government Schemes</a>
+                {% endif %}
+                <div class="pt-2 border-t border-slate-200 flex justify-between items-center">
+                    <span class="text-xs text-slate-500">{{ current_user.user.full_name }}</span>
+                    <a href="{{ url_for('auth_logout') }}" class="text-xs font-semibold text-rose-600">Sign Out</a>
+                </div>
+            {% else %}
+                <div class="pt-2 border-t border-slate-200 space-y-1">
+                    <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-2 py-1">Select Login Portal</div>
+                    <a href="/login/user" class="flex items-center gap-2 px-2 py-1.5 text-xs text-slate-700 hover:bg-slate-50 font-medium rounded">
+                        <span class="w-5 h-5 rounded bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-[10px]">1</span>
+                        <span>User Login</span>
+                    </a>
+                    <a href="/login/recruiter" class="flex items-center gap-2 px-2 py-1.5 text-xs text-slate-700 hover:bg-slate-50 font-medium rounded">
+                        <span class="w-5 h-5 rounded bg-teal-50 text-teal-800 flex items-center justify-center font-bold text-[10px]">2</span>
+                        <span>Recruiter Login</span>
+                    </a>
+                    <a href="/login/admin" class="flex items-center gap-2 px-2 py-1.5 text-xs text-slate-700 hover:bg-slate-50 font-medium rounded">
+                        <span class="w-5 h-5 rounded bg-purple-50 text-purple-800 flex items-center justify-center font-bold text-[10px]">3</span>
+                        <span>Admin Login</span>
+                    </a>
+                    <div class="pt-2 border-t border-slate-100">
+                        <a href="{{ url_for('auth_register') }}" class="block px-2 py-1.5 text-teal-700 font-semibold text-xs">Create Account</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 space-y-2">
+                {% for category, message in messages %}
+                    <div class="alert-box flex items-center justify-between px-4 py-3 rounded text-sm transition-opacity duration-200
+                        {% if category == 'danger' %} bg-rose-50 text-rose-800 border border-rose-200
+                        {% elif category == 'warning' %} bg-amber-50 text-amber-800 border border-amber-200
+                        {% elif category == 'success' %} bg-emerald-50 text-emerald-800 border border-emerald-200
+                        {% else %} bg-sky-50 text-sky-800 border border-sky-200 {% endif %}">
+                        <div class="flex items-center gap-2">
+                            <span class="font-medium">{{ message }}</span>
+                        </div>
+                        <button type="button" class="alert-close-btn text-xs font-bold opacity-60 hover:opacity-100">&times;</button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+
+
+    <!-- Clean, Purposeful Footer -->
+    <footer class="bg-white border-t border-slate-200 py-10 mt-12 text-sm text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Column 1: Identity & Statement -->
+                <div class="space-y-3">
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded bg-slate-900 text-white flex items-center justify-center font-bold text-xs">RT</span>
+                        <span class="font-bold text-base text-slate-900">ReTurn</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        A structured, human-centered platform assisting women returning to employment, education, entrepreneurship, or career transition following a career break.
+                    </p>
+                    <p class="text-[11px] text-slate-400">
+                        Zero fabricated statistics. Transparent source verification.
+                    </p>
+                </div>
+
+                <!-- Column 2: Pathways -->
+                <div>
+                    <h4 class="font-semibold text-slate-900 mb-3 text-xs uppercase tracking-wider">Career Pathways</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="{{ url_for('path_experienced') }}" class="hover:text-slate-900 transition">Experienced + Career Gap</a></li>
+                        <li><a href="{{ url_for('path_beginner') }}" class="hover:text-slate-900 transition">No Previous Experience</a></li>
+                        <li><a href="{{ url_for('path_transition') }}" class="hover:text-slate-900 transition">Career Shift & Transferable Skills</a></li>
+                        <li><a href="{{ url_for('government_hub') }}" class="hover:text-slate-900 transition">Government Opportunities</a></li>
+                        <li><a href="{{ url_for('startup_hub') }}" class="hover:text-slate-900 transition">Startup & Freelance Hub</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Platform Resources -->
+                <div>
+                    <h4 class="font-semibold text-slate-900 mb-3 text-xs uppercase tracking-wider">Resources & Trust</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="{{ url_for('learning_catalog') }}" class="hover:text-slate-900 transition">Verified Learning Catalog</a></li>
+                        <li><a href="{{ url_for('explore_opportunities') }}" class="hover:text-slate-900 transition">Opportunity Directory</a></li>
+                        <li><a href="{{ url_for('resume_hub') }}" class="hover:text-slate-900 transition">Resume Analysis Hub</a></li>
+                        <li><span class="text-slate-400">Job Trust & Verification System</span></li>
+                        <li><a href="{{ url_for('recruiter_login') }}" class="hover:text-slate-900 transition">Recruiter Verification Portal</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 4: Institutional & Legal -->
+                <div>
+                    <h4 class="font-semibold text-slate-900 mb-3 text-xs uppercase tracking-wider">Transparency & Access</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="{{ url_for('landing') }}#about" class="hover:text-slate-900 transition">About Platform</a></li>
+                        <li><a href="{{ url_for('landing') }}#how-it-works" class="hover:text-slate-900 transition">How It Works</a></li>
+                        <li><a href="{{ url_for('privacy_page') }}" class="hover:text-slate-900 transition">Privacy Policy (Data Minimization)</a></li>
+                        <li><a href="{{ url_for('terms_page') }}" class="hover:text-slate-900 transition">Terms of Service</a></li>
+                        <li><a href="{{ url_for('admin_login') }}" class="text-slate-400 hover:text-slate-600 transition">Administrative Portal</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-400">
+                <p>&copy; 2026 ReTurn Platform. Dedicated to genuine career re-entry.</p>
+                <p class="mt-2 sm:mt-0">All government schemes referenced from official central and state public sources.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating ReTurn Assistant Chatbox Widget -->
+    <div id="chatbot-container" class="fixed bottom-6 right-6 z-50">
+        <!-- Floating Launcher Button -->
+        <button id="chatbot-toggle-btn"
+                type="button"
+                class="flex items-center gap-2.5 bg-slate-900 hover:bg-slate-800 text-white px-4 py-3 rounded-full shadow-xl border border-slate-700 transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 cursor-pointer"
+                aria-label="Open ReTurn Career Assistant"
+                title="Ask ReTurn Assistant">
+            <span class="relative flex h-2.5 w-2.5">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-teal-500"></span>
+            </span>
+            <svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+            </svg>
+            <span class="text-xs font-semibold tracking-wide">Ask ReTurn</span>
+        </button>
+
+        <!-- Chatbot Window -->
+        <div id="chatbot-window"
+             class="hidden fixed bottom-6 right-6 w-96 max-w-[calc(100vw-2rem)] h-[520px] max-h-[calc(100vh-5rem)] bg-white rounded-xl shadow-2xl border border-slate-200 flex flex-col z-50 overflow-hidden"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="chatbot-title">
+
+            <!-- Window Header -->
+            <div class="bg-slate-900 text-white px-4 py-3 flex items-center justify-between border-b border-slate-800 select-none">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-7 h-7 rounded-lg bg-teal-600 flex items-center justify-center font-bold text-xs text-white shadow-sm">
+                        RT
+                    </div>
+                    <div>
+                        <div id="chatbot-title" class="font-semibold text-xs tracking-wide flex items-center gap-1.5">
+                            ReTurn Assistant
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block animate-pulse"></span>
+                        </div>
+                        <div class="text-[10px] text-slate-400">Automated Re-Entry Guidance</div>
+                    </div>
+                </div>
+                <!-- Cross / Wrong Button (❌) to Close Chatbox -->
+                <button id="chatbot-close-btn"
+                        type="button"
+                        class="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer"
+                        title="Close Chat (Wrong / Cross Button)"
+                        aria-label="Close Assistant">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Assistant Notice Banner -->
+            <div class="bg-slate-100 px-3 py-1.5 border-b border-slate-200 text-[10.5px] text-slate-600 flex items-center justify-between">
+                <span>Factual platform & career gap guidance</span>
+                <span class="text-slate-400 text-[9.5px]">Automated</span>
+            </div>
+
+            <!-- Messages Stream Area -->
+            <div id="chatbot-messages" class="flex-1 p-3.5 overflow-y-auto space-y-3 bg-slate-50 text-xs leading-relaxed">
+                <!-- Bot Greeting -->
+                <div class="flex gap-2 items-start">
+                    <div class="w-6 h-6 rounded bg-slate-900 text-white flex-shrink-0 flex items-center justify-center font-bold text-[10px]">
+                        RT
+                    </div>
+                    <div class="bg-white border border-slate-200 text-slate-800 p-2.5 rounded-lg shadow-2xs max-w-[85%]">
+                        <p class="font-medium text-slate-900 mb-1">Hello! How can I assist you?</p>
+                        <p class="text-slate-600 text-[11.5px]">I can help answer questions about explaining your career break, verified government schemes (Stand-Up India, Mudra), or navigating your roadmap.</p>
+                    </div>
+                </div>
+
+                <!-- Quick Suggestion Chips -->
+                <div id="chatbot-chips" class="pt-1 flex flex-wrap gap-1.5">
+                    <button type="button" class="chat-chip text-[11px] bg-white hover:bg-teal-50 text-teal-800 border border-teal-200 hover:border-teal-400 px-2.5 py-1 rounded-full font-medium transition cursor-pointer text-left">
+                        How to explain career break?
+                    </button>
+                    <button type="button" class="chat-chip text-[11px] bg-white hover:bg-teal-50 text-teal-800 border border-teal-200 hover:border-teal-400 px-2.5 py-1 rounded-full font-medium transition cursor-pointer text-left">
+                        Government schemes for women
+                    </button>
+                    <button type="button" class="chat-chip text-[11px] bg-white hover:bg-teal-50 text-teal-800 border border-teal-200 hover:border-teal-400 px-2.5 py-1 rounded-full font-medium transition cursor-pointer text-left">
+                        Verified free courses
+                    </button>
+                    <button type="button" class="chat-chip text-[11px] bg-white hover:bg-teal-50 text-teal-800 border border-teal-200 hover:border-teal-400 px-2.5 py-1 rounded-full font-medium transition cursor-pointer text-left">
+                        How are recruiters verified?
+                    </button>
+                </div>
+            </div>
+
+            <!-- Input Form -->
+            <form id="chatbot-form" class="p-2.5 bg-white border-t border-slate-200 flex gap-2 items-center">
+                <input type="text"
+                       id="chatbot-input"
+                       class="flex-1 px-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded-md focus:outline-none focus:border-teal-600 focus:bg-white transition"
+                       placeholder="Ask about career gaps, schemes, roadmaps..."
+                       autocomplete="off"
+                       required>
+                <button type="submit"
+                        id="chatbot-send-btn"
+                        class="px-3 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-md text-xs font-semibold transition flex items-center justify-center cursor-pointer"
+                        title="Send Message"
+                        aria-label="Send Message">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

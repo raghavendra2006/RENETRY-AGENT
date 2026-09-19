@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Policy — ReTurn Platform{% endblock %}
+
+{% block content %}
+<div class="py-12 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-8">
+        <div class="text-xs font-semibold text-teal-800 uppercase tracking-wider mb-1">Legal</div>
+        <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Privacy Policy</h1>
+        <p class="text-xs text-slate-500 mt-1">Last updated: September 2026</p>
+    </div>
+
+    <div class="bg-white p-6 sm:p-8 rounded-lg border border-slate-200 shadow-sm space-y-6 text-sm text-slate-700 leading-relaxed">
+
+        <section>
+            <h2 class="text-base font-bold text-slate-900 mb-2">1. Data Minimization Principle</h2>
+            <p>
+                ReTurn adheres to a strict <strong>data minimization</strong> approach. We collect only the information
+                necessary to provide career re-entry guidance, resume analysis, opportunity matching, and personalized
+                roadmaps. We do not request sensitive personal data such as Aadhaar numbers, bank details,
+                medical records, or biometric data.
+            </p>
+        </section>
+
+        <section>
+            <h2 class="text-base font-bold text-slate-900 mb-2">2. Information We Collect</h2>
+            <ul class="list-disc ml-5 space-y-1.5 text-xs text-slate-600">
+                <li><strong>Account Information:</strong> Full name, email address, and hashed password (passwords are never stored in plain text).</li>
+                <li><strong>Profile Data:</strong> Location, education, qualification, skills, career gap details, work preferences, and career goals.</li>
+                <li><strong>Resume Data:</strong> Uploaded resume files and extracted text for analysis purposes.</li>
+                <li><strong>Usage Data:</strong> Chatbot interactions, roadmap progress, bookmarks, and job applications submitted through the platform.</li>
+                <li><strong>Recruiter Data:</strong> Company name, designation, company email, website, and verification details.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2 class="text-base font-bold text-slate-900 mb-2">3. How We Use Your Data</h2>
+            <ul class="list-disc ml-5 space-y-1.5 text-xs text-slate-600">
+                <li>To generate personalized career analysis, skill gap assessments, and learning roadmaps.</li>
+                <li>To analyze uploaded resumes and provide structural and keyword improvement feedback.</li>
+                <li>To match your profile with relevant verified job opportunities.</li>
+                <li>To provide contextual chatbot assistance.</li>
+                <li>To send in-app notifications about relevant opportunities and platform updates.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2 class="text-base font-bold text-slate-900 mb-2">4. AI Processing</h2>
+            <p>
+                When AI features are enabled, portions of your profile data and resume text may be sent to
+                third-party AI providers (Google Gemini or OpenAI) for processing. This data is used solely
+                for generating personalized guidance and is subject to the respective AI provider's data handling policies.
+            </p>
+            <ul class="list-disc ml-5 mt-2 space-y-1 text-xs text-slate-600">
+                <li>We do not store AI-generated outputs permanently beyond what is saved in your analysis results.</li>
+                <li>AI processing is optional — the platform uses deterministic fallback logic when AI is unavailable.</li>
+                <li>No personal financial or medical data is ever sent to AI services.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2 class="text-base font-bold text-slate-900 mb-2">5. Data Storage & Security</h2>
+            <ul class="list-disc ml-5 space-y-1.5 text-xs text-slate-600">
+                <li>All data is stored locally in an SQLite database on the server.</li>
+                <li>Passwords are hashed using industry-standard Werkzeug security hashing (pbkdf2:sha256).</li>
+                <li>Session cookies are configured with HttpOnly and SameSite=Lax attributes.</li>
+                <li>Uploaded files are stored in a restricted server directory.</li>
+                <li>API keys and secrets are stored exclusively in server-side environment variables, never exposed to the client.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2 class="text-base font-bold text-slate-900 mb-2">6. Data Sharing</h2>
+            <p>
+                ReTurn does <strong>not</strong> sell, rent, or share your personal data with third parties
+                for marketing purposes. Your profile information is visible only to:
+            </p>
+            <ul class="list-disc ml-5 mt-2 space-y-1 text-xs text-slate-600">
+                <li><strong>You:</strong> Full access to all your own data.</li>
+                <li><strong>Verified Recruiters:</strong> Only when you explicitly apply to a job listing (application details and linked resume).</li>
+                <li><strong>Platform Administrators:</strong> For account management, verification, and moderation purposes.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2 class="text-base font-bold text-slate-900 mb-2">7. Data Retention</h2>
+            <p>
+                Your data is retained as long as your account is active. If you request account deletion,
+                all associated data (profile, resumes, analyses, applications, bookmarks, chat logs) will be
+                permanently removed from the database.
+            </p>
+        </section>
+
+        <section>
+            <h2 class="text-base font-bold text-slate-900 mb-2">8. Your Rights</h2>
+            <ul class="list-disc ml-5 space-y-1.5 text-xs text-slate-600">
+                <li><strong>Access:</strong> You can view all your stored data through your profile and dashboard.</li>
+                <li><strong>Correction:</strong> You can update your profile information at any time.</li>
+                <li><strong>Deletion:</strong> You may request complete deletion of your account and associated data.</li>
+                <li><strong>Portability:</strong> You can download your improved resume and analysis results.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2 class="text-base font-bold text-slate-900 mb-2">9. Cookies</h2>
+            <p>
+                ReTurn uses essential session cookies for authentication and user state management.
+                We do not use advertising cookies, tracking pixels, or third-party analytics trackers.
+            </p>
+        </section>
+
+        <section>
+            <h2 class="text-base font-bold text-slate-900 mb-2">10. Changes to This Policy</h2>
+            <p>
+                This privacy policy may be updated periodically. Any material changes will be communicated
+                through in-app notifications. Continued use of the platform constitutes acceptance of the
+                updated policy.
+            </p>
+        </section>
+
+        <div class="pt-4 border-t border-slate-200 text-xs text-slate-400">
+            <p>For privacy-related inquiries, contact the platform administrator.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
